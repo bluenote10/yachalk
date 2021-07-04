@@ -13,3 +13,6 @@ print(f"before {chalk.white('Hello World')} after")
 
 print(f"before {chalk.red.bg_black('Hello World')} after")
 print(f"before {chalk.blue.bg_black.bg_red.bg_white('Hello World')} after")
+
+# TODO:
+# print(chalk.bold(`foo ${chalk.red.dim('bar')} baz`))

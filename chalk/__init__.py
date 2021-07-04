@@ -1,3 +1,3 @@
-from .lib import *
+from .chalk import *
 
 __all__ = ["Chalk", "chalk"]
