@@ -13,6 +13,21 @@ def r(s: str) -> str:
     return s.__repr__()
 
 
+def test_interface_consistency() -> None:
+    def filter_names(names: List[str]) -> Set[str]:
+        return set(name for name in names if not name.startswith("__"))
+
+    funcs_factory = filter_names(dir(chalk))
+    funcs_generator = filter_names(dir(Generator([])))
+
+    funcs_generator = funcs_generator - {"create_from_ansi_16_code", "_codes"}
+
+    print(funcs_factory)
+    print(funcs_generator)
+
+    assert funcs_factory == funcs_generator
+
+
 def test_basics() -> None:
     assert r(chalk.reset("foo")) == r("\x1b[0mfoo\x1b[0m")
     assert r(chalk.bold("foo")) == r("\x1b[1mfoo\x1b[22m")
@@ -130,19 +145,22 @@ def test_manual_styling() -> None:
     )
 
 
-def test_interface_consistency() -> None:
-    def filter_names(names: List[str]) -> Set[str]:
-        return set(name for name in names if not name.startswith("__"))
+def test_type_support() -> None:
+    class Custom:
+        def __str__(self) -> str:
+            return "custom"
 
-    funcs_factory = filter_names(dir(chalk))
-    funcs_generator = filter_names(dir(Generator([])))
+    assert r(chalk.black(42)) == r("\x1b[30m42\x1b[39m")
+    assert r(chalk.black(1.0)) == r("\x1b[30m1.0\x1b[39m")
+    assert r(chalk.black(True)) == r("\x1b[30mTrue\x1b[39m")
+    assert r(chalk.black(Custom())) == r("\x1b[30mcustom\x1b[39m")
 
-    funcs_generator = funcs_generator - {"create_from_ansi_16_code", "_codes"}
 
-    print(funcs_factory)
-    print(funcs_generator)
-
-    assert funcs_factory == funcs_generator
+def test_vararg_support() -> None:
+    assert r(chalk.black("a", "b", "c")) == r("\x1b[30ma b c\x1b[39m")
+    assert r(chalk.black("a", "b", "c", sep="")) == r("\x1b[30mabc\x1b[39m")
+    assert r(chalk.black(1, 2, 3)) == r("\x1b[30m1 2 3\x1b[39m")
+    assert r(chalk.black(1, 2, 3, sep=", ")) == r("\x1b[30m1, 2, 3\x1b[39m")
 
 
 # -----------------------------------------------------------------------------

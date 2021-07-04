@@ -15,7 +15,12 @@ class Generator:
     def __init__(self, codes: List[Code]):
         self._codes = codes
 
-    def __call__(self, s: str) -> str:
+    def __call__(self, *args: object, sep: str = " ") -> str:
+        if len(args) == 1 and isinstance(args[0], str):
+            s = args[0]
+        else:
+            s = sep.join([str(arg) for arg in args])
+
         all_on = "".join([code.on for code in self._codes])
         all_off = "".join([code.off for code in self._codes])
 
