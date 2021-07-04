@@ -1,3 +1,5 @@
+import re
+
 from typing import List, NamedTuple, Union
 
 
@@ -25,6 +27,13 @@ class Generator:
                 # https://github.com/chalk/chalk/issues/334
                 # https://github.com/doowb/ansi-colors#nested-styling-bug
                 s = s.replace(code.off, code.off + code.on)
+
+        if "\n" in s:
+            s = re.sub(
+                r"(\r?\n)",
+                all_off + r"\1" + all_on,
+                s,
+            )
 
         return all_on + s + all_off
 

@@ -130,14 +130,6 @@ def test_manual_styling() -> None:
     )
 
 
-def test_support_nesting_styles_of_same_type() -> None:
-    assert r(
-        chalk.red(" a " + chalk.yellow(" b " + chalk.green(" c ") + " b ") + " a ")
-    ) == r(
-        "\x1b[31m a \x1b[33m b \x1b[32m c \x1b[39m\x1b[31m\x1b[33m b \x1b[39m\x1b[31m a \x1b[39m"
-    )
-
-
 def test_interface_consistency() -> None:
     def filter_names(names: List[str]) -> Set[str]:
         return set(name for name in names if not name.startswith("__"))
@@ -151,3 +143,34 @@ def test_interface_consistency() -> None:
     print(funcs_generator)
 
     assert funcs_factory == funcs_generator
+
+
+# -----------------------------------------------------------------------------
+# Test cases from Chalk
+# -----------------------------------------------------------------------------
+
+
+def test_support_nesting_styles_of_same_type() -> None:
+    assert r(
+        chalk.red(" a " + chalk.yellow(" b " + chalk.green(" c ") + " b ") + " a ")
+    ) == r(
+        "\x1b[31m a \x1b[33m b \x1b[32m c \x1b[39m\x1b[31m\x1b[33m b \x1b[39m\x1b[31m a \x1b[39m"
+    )
+
+
+def test_line_breaks_should_close_and_open_colors() -> None:
+    assert r(chalk.grey("hello\nworld")) == r(
+        "\u001B[90mhello\u001B[39m\n\u001B[90mworld\u001B[39m"
+    )
+
+
+def test_line_breaks_should_close_and_open_colors_with_crlf() -> None:
+    assert r(chalk.grey("hello\r\nworld")) == r(
+        "\u001B[90mhello\u001B[39m\r\n\u001B[90mworld\u001B[39m"
+    )
+
+
+def test_line_breaks_should_close_and_open_colors_multiple_occurrences() -> None:
+    assert r(chalk.grey(" a \r\n b \n c \r\n d ")) == r(
+        "\u001B[90m a \u001B[39m\r\n\u001B[90m b \u001B[39m\n\u001B[90m c \u001B[39m\r\n\u001B[90m d \u001B[39m"
+    )
