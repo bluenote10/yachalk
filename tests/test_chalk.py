@@ -41,6 +41,9 @@ def test_basics() -> None:
     assert r(chalk.cyan_bright("foo")) == r("\x1b[96mfoo\x1b[39m")
     assert r(chalk.white_bright("foo")) == r("\x1b[97mfoo\x1b[39m")
 
+    assert r(chalk.gray("foo")) == r("\x1b[90mfoo\x1b[39m")
+    assert r(chalk.grey("foo")) == r("\x1b[90mfoo\x1b[39m")
+
     assert r(chalk.bg_black("foo")) == r("\x1b[40mfoo\x1b[49m")
     assert r(chalk.bg_red("foo")) == r("\x1b[41mfoo\x1b[49m")
     assert r(chalk.bg_green("foo")) == r("\x1b[42mfoo\x1b[49m")
@@ -58,6 +61,9 @@ def test_basics() -> None:
     assert r(chalk.bg_magenta_bright("foo")) == r("\x1b[105mfoo\x1b[49m")
     assert r(chalk.bg_cyan_bright("foo")) == r("\x1b[106mfoo\x1b[49m")
     assert r(chalk.bg_white_bright("foo")) == r("\x1b[107mfoo\x1b[49m")
+
+    assert r(chalk.bg_gray("foo")) == r("\x1b[100mfoo\x1b[49m")
+    assert r(chalk.bg_grey("foo")) == r("\x1b[100mfoo\x1b[49m")
 
 
 def test_basics_chained() -> None:
@@ -91,6 +97,9 @@ def test_basics_chained() -> None:
     assert r(gen().cyan_bright("foo")) == r("\x1b[96mfoo\x1b[39m")
     assert r(gen().white_bright("foo")) == r("\x1b[97mfoo\x1b[39m")
 
+    assert r(gen().gray("foo")) == r("\x1b[90mfoo\x1b[39m")
+    assert r(gen().grey("foo")) == r("\x1b[90mfoo\x1b[39m")
+
     assert r(gen().bg_black("foo")) == r("\x1b[40mfoo\x1b[49m")
     assert r(gen().bg_red("foo")) == r("\x1b[41mfoo\x1b[49m")
     assert r(gen().bg_green("foo")) == r("\x1b[42mfoo\x1b[49m")
@@ -108,6 +117,9 @@ def test_basics_chained() -> None:
     assert r(gen().bg_magenta_bright("foo")) == r("\x1b[105mfoo\x1b[49m")
     assert r(gen().bg_cyan_bright("foo")) == r("\x1b[106mfoo\x1b[49m")
     assert r(gen().bg_white_bright("foo")) == r("\x1b[107mfoo\x1b[49m")
+
+    assert r(gen().bg_gray("foo")) == r("\x1b[100mfoo\x1b[49m")
+    assert r(gen().bg_grey("foo")) == r("\x1b[100mfoo\x1b[49m")
 
 
 def test_manual_styling() -> None:

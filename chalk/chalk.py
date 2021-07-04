@@ -165,6 +165,16 @@ class Generator:
         self.style(Color.white_bright)
         return self
 
+    @property
+    def gray(self) -> "Generator":
+        self.style(Color.gray)
+        return self
+
+    @property
+    def grey(self) -> "Generator":
+        self.style(Color.grey)
+        return self
+
     # Background colors
 
     @property
@@ -245,6 +255,16 @@ class Generator:
     @property
     def bg_white_bright(self) -> "Generator":
         self.style(BgColor.white_bright)
+        return self
+
+    @property
+    def bg_gray(self) -> "Generator":
+        self.style(BgColor.gray)
+        return self
+
+    @property
+    def bg_grey(self) -> "Generator":
+        self.style(BgColor.grey)
         return self
 
 
@@ -355,6 +375,14 @@ class Chalk:
     def white_bright(self) -> Generator:
         return Generator.create_from_ansi_16_code(Color.white_bright)
 
+    @property
+    def gray(self) -> Generator:
+        return Generator.create_from_ansi_16_code(Color.gray)
+
+    @property
+    def grey(self) -> Generator:
+        return Generator.create_from_ansi_16_code(Color.grey)
+
     # Background colors
 
     @property
@@ -420,6 +448,14 @@ class Chalk:
     @property
     def bg_white_bright(self) -> Generator:
         return Generator.create_from_ansi_16_code(BgColor.white_bright)
+
+    @property
+    def bg_gray(self) -> Generator:
+        return Generator.create_from_ansi_16_code(BgColor.gray)
+
+    @property
+    def bg_grey(self) -> Generator:
+        return Generator.create_from_ansi_16_code(BgColor.grey)
 
 
 def create_chalk() -> Chalk:

@@ -36,6 +36,9 @@ class Color:
     cyan_bright = Ansi16Code(96, 39)
     white_bright = Ansi16Code(97, 39)
 
+    gray = Ansi16Code(90, 39)
+    grey = Ansi16Code(90, 39)
+
 
 class BgColor:
     black = Ansi16Code(40, 49)
@@ -55,6 +58,9 @@ class BgColor:
     magenta_bright = Ansi16Code(105, 49)
     cyan_bright = Ansi16Code(106, 49)
     white_bright = Ansi16Code(107, 49)
+
+    gray = Ansi16Code(100, 49)
+    grey = Ansi16Code(100, 49)
 
 
 def wrap_ansi_16(code: int, offset: int = 0) -> str:
