@@ -6,7 +6,7 @@ class Ansi16Code(NamedTuple):
     off: int
 
 
-class Colors:
+class Color:
     black = Ansi16Code(30, 39)
     red = Ansi16Code(31, 39)
     green = Ansi16Code(32, 39)
@@ -17,15 +17,15 @@ class Colors:
     white = Ansi16Code(37, 39)
 
 
-class BgColors:
-    bg_black = Ansi16Code(40, 49)
-    bg_red = Ansi16Code(41, 49)
-    bg_green = Ansi16Code(42, 49)
-    bg_yellow = Ansi16Code(43, 49)
-    bg_blue = Ansi16Code(44, 49)
-    bg_magenta = Ansi16Code(45, 49)
-    bg_cyan = Ansi16Code(46, 49)
-    bg_white = Ansi16Code(47, 49)
+class BgColor:
+    black = Ansi16Code(40, 49)
+    red = Ansi16Code(41, 49)
+    green = Ansi16Code(42, 49)
+    yellow = Ansi16Code(43, 49)
+    blue = Ansi16Code(44, 49)
+    magenta = Ansi16Code(45, 49)
+    cyan = Ansi16Code(46, 49)
+    white = Ansi16Code(47, 49)
 
 
 def wrap_ansi_16(code: int, offset: int = 0) -> str:

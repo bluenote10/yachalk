@@ -1,7 +1,7 @@
 from typing import Tuple, List, NamedTuple, Union
 
 
-from .ansi_codes import Colors, BgColors, Ansi16Code, wrap_ansi_16
+from .ansi_codes import Color, BgColor, Ansi16Code, wrap_ansi_16
 
 
 class Code(NamedTuple):
@@ -29,8 +29,8 @@ class Generator:
         return all_on + s + all_off
 
     @staticmethod
-    def create_from_on_off_tuple(on_off_tuple: Tuple[int, int]) -> "Generator":
-        on, off = on_off_tuple
+    def create_from_ansi_16_code(ansi_16_code: Ansi16Code) -> "Generator":
+        on, off = ansi_16_code
         return Generator(
             codes=[Code(on=wrap_ansi_16(on), off=wrap_ansi_16(off))],
         )
@@ -43,77 +43,77 @@ class Generator:
 
     @property
     def bg_black(self) -> "Generator":
-        self.style(BgColors.bg_black)
+        self.style(BgColor.black)
         return self
 
     @property
     def bg_red(self) -> "Generator":
-        self.style(BgColors.bg_red)
+        self.style(BgColor.red)
         return self
 
     @property
     def bg_green(self) -> "Generator":
-        self.style(BgColors.bg_green)
+        self.style(BgColor.green)
         return self
 
     @property
     def bg_yellow(self) -> "Generator":
-        self.style(BgColors.bg_yellow)
+        self.style(BgColor.yellow)
         return self
 
     @property
     def bg_blue(self) -> "Generator":
-        self.style(BgColors.bg_blue)
+        self.style(BgColor.blue)
         return self
 
     @property
     def bg_magenta(self) -> "Generator":
-        self.style(BgColors.bg_magenta)
+        self.style(BgColor.magenta)
         return self
 
     @property
     def bg_cyan(self) -> "Generator":
-        self.style(BgColors.bg_cyan)
+        self.style(BgColor.cyan)
         return self
 
     @property
     def bg_white(self) -> "Generator":
-        self.style(BgColors.bg_white)
+        self.style(BgColor.white)
         return self
 
 
 class Chalk:
     @property
     def black(self) -> Generator:
-        return Generator.create_from_on_off_tuple(Colors.black)
+        return Generator.create_from_ansi_16_code(Color.black)
 
     @property
     def red(self) -> Generator:
-        return Generator.create_from_on_off_tuple(Colors.red)
+        return Generator.create_from_ansi_16_code(Color.red)
 
     @property
     def green(self) -> Generator:
-        return Generator.create_from_on_off_tuple(Colors.green)
+        return Generator.create_from_ansi_16_code(Color.green)
 
     @property
     def yellow(self) -> Generator:
-        return Generator.create_from_on_off_tuple(Colors.yellow)
+        return Generator.create_from_ansi_16_code(Color.yellow)
 
     @property
     def blue(self) -> Generator:
-        return Generator.create_from_on_off_tuple(Colors.blue)
+        return Generator.create_from_ansi_16_code(Color.blue)
 
     @property
     def magenta(self) -> Generator:
-        return Generator.create_from_on_off_tuple(Colors.magenta)
+        return Generator.create_from_ansi_16_code(Color.magenta)
 
     @property
     def cyan(self) -> Generator:
-        return Generator.create_from_on_off_tuple(Colors.cyan)
+        return Generator.create_from_ansi_16_code(Color.cyan)
 
     @property
     def white(self) -> Generator:
-        return Generator.create_from_on_off_tuple(Colors.white)
+        return Generator.create_from_ansi_16_code(Color.white)
 
 
 def create_chalk() -> Chalk:
