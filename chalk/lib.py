@@ -1,8 +1,10 @@
+from typing import Tuple, List
+
 from .ansi_codes import Colors, BgColors, wrap_ansi_16
 
 
 class Generator:
-    def __init__(self, on, off):
+    def __init__(self, on: List[str], off: List[str]):
         self.on = on
         self.off = off
 
@@ -12,9 +14,12 @@ class Generator:
         return all_on + s + all_off
 
     @staticmethod
-    def create_from_color(color):
-        on, off = color
-        return Generator([wrap_ansi_16(on)], [wrap_ansi_16(off)])
+    def create_from_on_off_tuple(on_off_tuple: Tuple[int, int]) -> "Generator":
+        on, off = on_off_tuple
+        return Generator(
+            on=[wrap_ansi_16(on)],
+            off=[wrap_ansi_16(off)],
+        )
 
     @property
     def bg_black(self) -> "Generator":
@@ -76,38 +81,38 @@ class Generator:
 class Chalk:
     @property
     def black(self) -> Generator:
-        return Generator.create_from_color(Colors.black)
+        return Generator.create_from_on_off_tuple(Colors.black)
 
     @property
     def red(self) -> Generator:
-        return Generator.create_from_color(Colors.red)
+        return Generator.create_from_on_off_tuple(Colors.red)
 
     @property
     def green(self) -> Generator:
-        return Generator.create_from_color(Colors.green)
+        return Generator.create_from_on_off_tuple(Colors.green)
 
     @property
     def yellow(self) -> Generator:
-        return Generator.create_from_color(Colors.yellow)
+        return Generator.create_from_on_off_tuple(Colors.yellow)
 
     @property
     def blue(self) -> Generator:
-        return Generator.create_from_color(Colors.blue)
+        return Generator.create_from_on_off_tuple(Colors.blue)
 
     @property
     def magenta(self) -> Generator:
-        return Generator.create_from_color(Colors.magenta)
+        return Generator.create_from_on_off_tuple(Colors.magenta)
 
     @property
     def cyan(self) -> Generator:
-        return Generator.create_from_color(Colors.cyan)
+        return Generator.create_from_on_off_tuple(Colors.cyan)
 
     @property
     def white(self) -> Generator:
-        return Generator.create_from_color(Colors.white)
+        return Generator.create_from_on_off_tuple(Colors.white)
 
 
-def create_chalk():
+def create_chalk() -> Chalk:
     return Chalk()
 
 

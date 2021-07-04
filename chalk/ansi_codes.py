@@ -20,5 +20,5 @@ class BgColors:
     bg_white = (47, 49)
 
 
-def wrap_ansi_16(code, offset=0):
+def wrap_ansi_16(code: int, offset: int = 0) -> str:
     return f"\u001b[{code + offset}m"
