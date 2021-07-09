@@ -1,0 +1,52 @@
+# https://docs.github.com/en/actions/configuring-and-managing-workflows/configuring-a-workflow
+# https://docs.github.com/en/actions/guides/building-and-testing-python
+
+name: ci
+
+on:
+  push:
+    branches:
+    - master
+  pull_request:
+  schedule:
+    - cron: '0 0 * * 0' # at 00:00 every Sunday
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.6, 3.7, 3.8, 3.9]
+
+    steps:
+
+      - uses: actions/checkout@v2
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install black flake8 pytest
+          # if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Check types
+        run: |
+          ./scripts/check_types
+
+      - name: Check linter
+        run: |
+          ./scripts/check_linter
+
+      - name: Check format
+        run: |
+          ./scripts/check_fmt
+
+      - name: Tests
+        run: |
+          ./scripts/test

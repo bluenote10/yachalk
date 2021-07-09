@@ -1,0 +1,3 @@
+#!/bin/bash -eux
+
+flake8 --count --show-source --statistics

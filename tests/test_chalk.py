@@ -190,5 +190,5 @@ def test_line_breaks_should_close_and_open_colors_with_crlf() -> None:
 
 def test_line_breaks_should_close_and_open_colors_multiple_occurrences() -> None:
     assert r(chalk.grey(" a \r\n b \n c \r\n d ")) == r(
-        "\u001B[90m a \u001B[39m\r\n\u001B[90m b \u001B[39m\n\u001B[90m c \u001B[39m\r\n\u001B[90m d \u001B[39m"
+        "\u001B[90m a \u001B[39m\r\n\u001B[90m b \u001B[39m\n\u001B[90m c \u001B[39m\r\n\u001B[90m d \u001B[39m"  # noqa
     )

@@ -1,0 +1,3 @@
+#!/bin/bash -eux
+
+./scripts/check_types && ./scripts/check_linter && ./scripts/check_fmt && ./scripts/test

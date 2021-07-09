@@ -1,3 +1,3 @@
-from .chalk import *
+from .chalk import Chalk, chalk
 
 __all__ = ["Chalk", "chalk"]
