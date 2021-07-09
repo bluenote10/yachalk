@@ -3,6 +3,8 @@ Inspired by:
 https://github.com/chalk/ansi-styles/blob/main/index.js
 """
 
+import math
+
 from typing import NamedTuple
 
 
@@ -68,15 +70,21 @@ class BgColor:
     grey = Ansi16Code(100, 49)
 
 
-def wrap_ansi_16(code: int, offset: int = 0) -> str:
+_ANSI_BACKGROUND_OFFSET = 10
+
+
+def wrap_ansi_16(code: int, background: bool = False) -> str:
+    offset = _ANSI_BACKGROUND_OFFSET if background else 0
     return f"\x1b[{code + offset}m"
 
 
-def wrap_ansi_256(code: int, offset: int = 0) -> str:
+def wrap_ansi_256(code: int, background: bool = False) -> str:
+    offset = _ANSI_BACKGROUND_OFFSET if background else 0
     return f"\x1b[{38 + offset};5;{code}m"
 
 
-def wrap_ansi_16m(r: int, g: int, b: int, offset: int = 0) -> str:
+def wrap_ansi_16m(r: int, g: int, b: int, background: bool = False) -> str:
+    offset = _ANSI_BACKGROUND_OFFSET if background else 0
     return f"\x1b[{38 + offset};2;{r};{g};{b}m"
 
 
@@ -89,3 +97,36 @@ def rgb_to_ansi_256(r: int, g: int, b: int) -> int:
         return round(((r - 8) / 247) * 24) + 232
 
     return 16 + (36 * round(r / 255 * 5)) + (6 * round(g / 255 * 5)) + round(b / 255 * 5)
+
+
+def ansi_256_to_ansi_16(code: int) -> int:
+    if code < 8:
+        return 30 + code
+
+    if code < 16:
+        return 90 + (code - 8)
+
+    if code >= 232:
+        r = (((code - 232) * 10) + 8) / 255
+        g = r
+        b = r
+    else:
+        code -= 16
+
+        remainder = code % 36
+
+        r = math.floor(code / 36) / 5
+        g = math.floor(remainder / 6) / 5
+        b = (remainder % 6) / 5
+
+    value = max(r, g, b) * 2
+
+    if value == 0:
+        return 30
+
+    result = 30 + ((round(b) << 2) | (round(g) << 1) | round(r))
+
+    if value == 2:
+        result += 60
+
+    return result
