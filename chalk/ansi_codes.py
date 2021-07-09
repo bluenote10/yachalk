@@ -1,3 +1,8 @@
+"""
+Inspired by:
+https://github.com/chalk/ansi-styles/blob/main/index.js
+"""
+
 from typing import NamedTuple
 
 
@@ -65,3 +70,22 @@ class BgColor:
 
 def wrap_ansi_16(code: int, offset: int = 0) -> str:
     return f"\x1b[{code + offset}m"
+
+
+def wrap_ansi_256(code: int, offset: int = 0) -> str:
+    return f"\x1b[{38 + offset};5;{code}m"
+
+
+def wrap_ansi_16m(r: int, g: int, b: int, offset: int = 0) -> str:
+    return f"\x1b[{38 + offset};2;{r};{g};{b}m"
+
+
+def rgb_to_ansi_256(r: int, g: int, b: int) -> int:
+    if r == g and g == b:
+        if r < 8:
+            return 16
+        if r > 248:
+            return 231
+        return round(((r - 8) / 247) * 24) + 232
+
+    return 16 + (36 * round(r / 255 * 5)) + (6 * round(g / 255 * 5)) + round(b / 255 * 5)
