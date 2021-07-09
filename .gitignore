@@ -4,4 +4,8 @@ __pycache__/
 *.pyc
 *.egg-info/
 
+cov_html/
+.coverage
+
 examples/check*.py
+

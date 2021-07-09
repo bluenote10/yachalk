@@ -169,9 +169,7 @@ def test_vararg_support() -> None:
 
 
 def test_support_nesting_styles_of_same_type() -> None:
-    assert r(
-        chalk.red(" a " + chalk.yellow(" b " + chalk.green(" c ") + " b ") + " a ")
-    ) == r(
+    assert r(chalk.red(" a " + chalk.yellow(" b " + chalk.green(" c ") + " b ") + " a ")) == r(
         "\x1b[31m a \x1b[33m b \x1b[32m c \x1b[39m\x1b[31m\x1b[33m b \x1b[39m\x1b[31m a \x1b[39m"
     )
 
