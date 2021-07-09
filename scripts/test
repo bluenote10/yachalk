@@ -1,5 +1,3 @@
 #!/bin/bash -eux
 
-pwd
-ls -la
-python -m pytest
+pytest
