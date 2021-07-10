@@ -200,10 +200,31 @@ def test_rgb_hex_chained() -> None:
     assert r(gen0().bg_hex("14283c")("foo")) == r("foo")
 
 
+def test_disabled_mode() -> None:
+    chalk = ChalkFactory(mode=ColorMode.NoColors)
+    assert r(chalk.black("foo")) == r("foo")
+    assert r(chalk.style(Color.black)("foo")) == r("foo")
+
+    def gen() -> ChalkBuilder:
+        return ChalkBuilder(ColorMode.NoColors, [])
+
+    assert r(gen().black("foo")) == r("foo")
+    assert r(gen().style(Color.black)("foo")) == r("foo")
+
+
 def test_manual_styling(chalk: ChalkFactory) -> None:
     assert chalk.style(Color.black)("foo") == "\x1b[30mfoo\x1b[39m"
     assert (
         chalk.style(Color.black).style(BgColor.white)("foo")
+        == "\x1b[30m\x1b[47mfoo\x1b[39m\x1b[49m"
+    )
+
+    def gen() -> ChalkBuilder:
+        return ChalkBuilder(ColorMode.FullTrueColor, [])
+
+    assert gen().style(Color.black)("foo") == "\x1b[30mfoo\x1b[39m"
+    assert (
+        gen().style(Color.black).style(BgColor.white)("foo")
         == "\x1b[30m\x1b[47mfoo\x1b[39m\x1b[49m"
     )
 

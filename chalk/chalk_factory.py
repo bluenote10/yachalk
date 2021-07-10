@@ -19,10 +19,14 @@ class ChalkFactory:
     # Internal helpers
 
     def _create_generator_from_ansi_16_code(self, ansi_16_code: Ansi16Code) -> "ChalkBuilder":
-        on, off = ansi_16_code
+        if self._mode != ColorMode.NoColors:
+            on, off = ansi_16_code
+            codes = [Code(on=wrap_ansi_16(on), off=wrap_ansi_16(off))]
+        else:
+            codes = []
         return ChalkBuilder(
             mode=self._mode,
-            codes=[Code(on=wrap_ansi_16(on), off=wrap_ansi_16(off))],
+            codes=codes,
         )
 
     # General style function

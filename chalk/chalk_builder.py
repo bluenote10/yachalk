@@ -48,9 +48,10 @@ class ChalkBuilder:
     # General style function
 
     def style(self, code: Union[Code, Ansi16Code]) -> "ChalkBuilder":
-        if isinstance(code, Ansi16Code):
-            code = Code(on=wrap_ansi_16(code.on), off=wrap_ansi_16(code.off))
-        self._codes.append(code)
+        if self._mode != ColorMode.NoColors:
+            if isinstance(code, Ansi16Code):
+                code = Code(on=wrap_ansi_16(code.on), off=wrap_ansi_16(code.off))
+            self._codes.append(code)
         return self
 
     # Modifiers
