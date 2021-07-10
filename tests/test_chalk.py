@@ -1,24 +1,26 @@
 from typing import List, Set
 
-from chalk import chalk
-from chalk.chalk import Generator, ColorMode
-from chalk.ansi_codes import Color, BgColor
+import pytest
+
+from chalk.types import ColorMode
+from chalk.chalk_factory import ChalkFactory
+from chalk.chalk_builder import ChalkBuilder
+from chalk.ansi import Color, BgColor
+
+from helper import r
 
 
-def r(s: str) -> str:
-    """
-    Pytest string handling is quite inappropriate for the task.
-    """
-    print(s.__repr__())
-    return s.__repr__()
+@pytest.fixture  # type: ignore
+def chalk() -> ChalkFactory:
+    return ChalkFactory(mode=ColorMode.FullTrueColor)
 
 
-def test_interface_consistency() -> None:
+def test_interface_consistency(chalk: ChalkFactory) -> None:
     def filter_names(names: List[str]) -> Set[str]:
         return set(name for name in names if not name.startswith("__"))
 
     funcs_factory = filter_names(dir(chalk))
-    funcs_generator = filter_names(dir(Generator(mode=ColorMode.FullTrueColor, codes=[])))
+    funcs_generator = filter_names(dir(ChalkBuilder(mode=ColorMode.FullTrueColor, codes=[])))
 
     funcs_factory -= {"_create_generator_from_ansi_16_code"}
     funcs_generator -= {"_codes"}
@@ -29,7 +31,7 @@ def test_interface_consistency() -> None:
     assert funcs_factory == funcs_generator
 
 
-def test_basics() -> None:
+def test_basics(chalk: ChalkFactory) -> None:
     assert r(chalk.reset("foo")) == r("\x1b[0mfoo\x1b[0m")
     assert r(chalk.bold("foo")) == r("\x1b[1mfoo\x1b[22m")
     assert r(chalk.dim("foo")) == r("\x1b[2mfoo\x1b[22m")
@@ -83,8 +85,8 @@ def test_basics() -> None:
 
 
 def test_basics_chained() -> None:
-    def gen() -> Generator:
-        return Generator(ColorMode.FullTrueColor, [])
+    def gen() -> ChalkBuilder:
+        return ChalkBuilder(ColorMode.FullTrueColor, [])
 
     assert r(gen().reset("foo")) == r("\x1b[0mfoo\x1b[0m")
     assert r(gen().bold("foo")) == r("\x1b[1mfoo\x1b[22m")
@@ -138,7 +140,67 @@ def test_basics_chained() -> None:
     assert r(gen().bg_grey("foo")) == r("\x1b[100mfoo\x1b[49m")
 
 
-def test_manual_styling() -> None:
+def test_rgb_hex() -> None:
+    chalk = ChalkFactory(mode=ColorMode.FullTrueColor)
+    assert r(chalk.rgb(20, 40, 60)("foo")) == r("\x1b[38;2;20;40;60mfoo\x1b[39m")
+    assert r(chalk.hex("14283c")("foo")) == r("\x1b[38;2;20;40;60mfoo\x1b[39m")
+    assert r(chalk.bg_rgb(20, 40, 60)("foo")) == r("\x1b[48;2;20;40;60mfoo\x1b[49m")
+    assert r(chalk.bg_hex("14283c")("foo")) == r("\x1b[48;2;20;40;60mfoo\x1b[49m")
+
+    chalk = ChalkFactory(mode=ColorMode.Extended256)
+    assert r(chalk.rgb(20, 40, 60)("foo")) == r("\x1b[38;5;23mfoo\x1b[39m")
+    assert r(chalk.hex("14283c")("foo")) == r("\x1b[38;5;23mfoo\x1b[39m")
+    assert r(chalk.bg_rgb(20, 40, 60)("foo")) == r("\x1b[48;5;23mfoo\x1b[49m")
+    assert r(chalk.bg_hex("14283c")("foo")) == r("\x1b[48;5;23mfoo\x1b[49m")
+
+    chalk = ChalkFactory(mode=ColorMode.Basic16)
+    assert r(chalk.rgb(20, 40, 60)("foo")) == r("\x1b[30mfoo\x1b[39m")
+    assert r(chalk.hex("14283c")("foo")) == r("\x1b[30mfoo\x1b[39m")
+    assert r(chalk.bg_rgb(20, 40, 60)("foo")) == r("\x1b[40mfoo\x1b[49m")
+    assert r(chalk.bg_hex("14283c")("foo")) == r("\x1b[40mfoo\x1b[49m")
+
+    chalk = ChalkFactory(mode=ColorMode.NoColors)
+    assert r(chalk.rgb(20, 40, 60)("foo")) == r("foo")
+    assert r(chalk.hex("14283c")("foo")) == r("foo")
+    assert r(chalk.bg_rgb(20, 40, 60)("foo")) == r("foo")
+    assert r(chalk.bg_hex("14283c")("foo")) == r("foo")
+
+
+def test_rgb_hex_chained() -> None:
+    def gen3() -> ChalkBuilder:
+        return ChalkBuilder(ColorMode.FullTrueColor, [])
+
+    assert r(gen3().rgb(20, 40, 60)("foo")) == r("\x1b[38;2;20;40;60mfoo\x1b[39m")
+    assert r(gen3().hex("14283c")("foo")) == r("\x1b[38;2;20;40;60mfoo\x1b[39m")
+    assert r(gen3().bg_rgb(20, 40, 60)("foo")) == r("\x1b[48;2;20;40;60mfoo\x1b[49m")
+    assert r(gen3().bg_hex("14283c")("foo")) == r("\x1b[48;2;20;40;60mfoo\x1b[49m")
+
+    def gen2() -> ChalkBuilder:
+        return ChalkBuilder(ColorMode.Extended256, [])
+
+    assert r(gen2().rgb(20, 40, 60)("foo")) == r("\x1b[38;5;23mfoo\x1b[39m")
+    assert r(gen2().hex("14283c")("foo")) == r("\x1b[38;5;23mfoo\x1b[39m")
+    assert r(gen2().bg_rgb(20, 40, 60)("foo")) == r("\x1b[48;5;23mfoo\x1b[49m")
+    assert r(gen2().bg_hex("14283c")("foo")) == r("\x1b[48;5;23mfoo\x1b[49m")
+
+    def gen1() -> ChalkBuilder:
+        return ChalkBuilder(ColorMode.Basic16, [])
+
+    assert r(gen1().rgb(20, 40, 60)("foo")) == r("\x1b[30mfoo\x1b[39m")
+    assert r(gen1().hex("14283c")("foo")) == r("\x1b[30mfoo\x1b[39m")
+    assert r(gen1().bg_rgb(20, 40, 60)("foo")) == r("\x1b[40mfoo\x1b[49m")
+    assert r(gen1().bg_hex("14283c")("foo")) == r("\x1b[40mfoo\x1b[49m")
+
+    def gen0() -> ChalkBuilder:
+        return ChalkBuilder(ColorMode.NoColors, [])
+
+    assert r(gen0().rgb(20, 40, 60)("foo")) == r("foo")
+    assert r(gen0().hex("14283c")("foo")) == r("foo")
+    assert r(gen0().bg_rgb(20, 40, 60)("foo")) == r("foo")
+    assert r(gen0().bg_hex("14283c")("foo")) == r("foo")
+
+
+def test_manual_styling(chalk: ChalkFactory) -> None:
     assert chalk.style(Color.black)("foo") == "\x1b[30mfoo\x1b[39m"
     assert (
         chalk.style(Color.black).style(BgColor.white)("foo")
@@ -146,7 +208,7 @@ def test_manual_styling() -> None:
     )
 
 
-def test_type_support() -> None:
+def test_type_support(chalk: ChalkFactory) -> None:
     class Custom:
         def __str__(self) -> str:
             return "custom"
@@ -157,7 +219,7 @@ def test_type_support() -> None:
     assert r(chalk.black(Custom())) == r("\x1b[30mcustom\x1b[39m")
 
 
-def test_vararg_support() -> None:
+def test_vararg_support(chalk: ChalkFactory) -> None:
     assert r(chalk.black("a", "b", "c")) == r("\x1b[30ma b c\x1b[39m")
     assert r(chalk.black("a", "b", "c", sep="")) == r("\x1b[30mabc\x1b[39m")
     assert r(chalk.black(1, 2, 3)) == r("\x1b[30m1 2 3\x1b[39m")
@@ -169,25 +231,25 @@ def test_vararg_support() -> None:
 # -----------------------------------------------------------------------------
 
 
-def test_support_nesting_styles_of_same_type() -> None:
+def test_support_nesting_styles_of_same_type(chalk: ChalkFactory) -> None:
     assert r(chalk.red(" a " + chalk.yellow(" b " + chalk.green(" c ") + " b ") + " a ")) == r(
         "\x1b[31m a \x1b[33m b \x1b[32m c \x1b[39m\x1b[31m\x1b[33m b \x1b[39m\x1b[31m a \x1b[39m"
     )
 
 
-def test_line_breaks_should_close_and_open_colors() -> None:
+def test_line_breaks_should_close_and_open_colors(chalk: ChalkFactory) -> None:
     assert r(chalk.grey("hello\nworld")) == r(
         "\u001B[90mhello\u001B[39m\n\u001B[90mworld\u001B[39m"
     )
 
 
-def test_line_breaks_should_close_and_open_colors_with_crlf() -> None:
+def test_line_breaks_should_close_and_open_colors_with_crlf(chalk: ChalkFactory) -> None:
     assert r(chalk.grey("hello\r\nworld")) == r(
         "\u001B[90mhello\u001B[39m\r\n\u001B[90mworld\u001B[39m"
     )
 
 
-def test_line_breaks_should_close_and_open_colors_multiple_occurrences() -> None:
+def test_line_breaks_should_close_and_open_colors_multiple_occurrences(chalk: ChalkFactory) -> None:
     assert r(chalk.grey(" a \r\n b \n c \r\n d ")) == r(
         "\u001B[90m a \u001B[39m\r\n\u001B[90m b \u001B[39m\n\u001B[90m c \u001B[39m\r\n\u001B[90m d \u001B[39m"  # noqa
     )

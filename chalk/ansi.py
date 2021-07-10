@@ -4,9 +4,8 @@ https://github.com/chalk/ansi-styles/blob/main/index.js
 """
 
 import math
-import re
 
-from typing import NamedTuple, Tuple
+from typing import NamedTuple
 
 
 class Ansi16Code(NamedTuple):
@@ -134,17 +133,3 @@ def ansi_256_to_ansi_16(code: int) -> int:
         result += 60
 
     return result
-
-
-def hex_to_rgb(hex: str) -> Tuple[int, int, int]:
-
-    if len(hex) == 3:
-        hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2]
-
-    hex = hex.lower()
-    m = re.match(r"^([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$", hex)
-
-    if m is None:
-        raise ValueError(f"'{hex}' is not a valid hex literal")
-
-    return int(m.group(1), 16), int(m.group(2), 16), int(m.group(3), 16)
