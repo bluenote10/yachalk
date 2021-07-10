@@ -1,4 +1,6 @@
-from chalk.ansi_codes import rgb_to_ansi_256, ansi_256_to_ansi_16
+import pytest
+
+from chalk.ansi_codes import rgb_to_ansi_256, ansi_256_to_ansi_16, hex_to_rgb
 
 
 def test_rgb_to_ansi_256() -> None:
@@ -24,10 +26,6 @@ def test_rgb_to_ansi_256() -> None:
     assert rgb_to_ansi_256(69, 173, 92) == 72
     assert rgb_to_ansi_256(201, 101, 240) == 177
     assert rgb_to_ansi_256(20, 40, 60) == 23
-
-    # 69, 173, 92 => 72
-    # rgb(201, 101, 240) = 177
-    # rgb(20, 40, 60) = 23
 
 
 def test_ansi_256_to_ansi_16() -> None:
@@ -58,3 +56,20 @@ def test_ansi_256_to_ansi_16() -> None:
             i += 1
 
     assert i == 256
+
+
+def test_hex_to_rgb() -> None:
+    assert hex_to_rgb("000") == (0, 0, 0)
+    assert hex_to_rgb("fff") == (255, 255, 255)
+
+    assert hex_to_rgb("102030") == (16, 32, 48)
+    assert hex_to_rgb("abcdef") == (171, 205, 239)
+
+    with pytest.raises(ValueError, match="is not a valid hex literal"):
+        hex_to_rgb("12345")
+
+    with pytest.raises(ValueError, match="is not a valid hex literal"):
+        hex_to_rgb("1234567")
+
+    with pytest.raises(ValueError, match="is not a valid hex literal"):
+        hex_to_rgb("xyxyxy")
