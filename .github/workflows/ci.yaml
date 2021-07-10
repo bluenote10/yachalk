@@ -71,19 +71,25 @@ jobs:
         with:
           python-version: 3.8
 
+      - name: Install wheel
+        run: pip install wheel
+
       - name: Package
-        run: |
-          set -e
-          pip install wheel
-          python setup.py sdist bdist_wheel
-          ls -la dist
+        run: python setup.py sdist bdist_wheel
 
+      - name: Check output
+        run: ls -la dist
+
+      - name: Check deploy condition
       - run: |
-          echo ${{github.ref}}
-          echo ${{github.event_name}}
+          echo "github.ref: ${{github.ref}}"
+          echo "github.event_name: ${{github.event_name}}"
 
-      - name: Deploy
-        run: |
-          echo "Deploying..."
+      - name: Publish to PyPI
         if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          user: __token__
+          password: ${{ secrets.PYPI_API_TOKEN }}
+          skip_existing: true
 
