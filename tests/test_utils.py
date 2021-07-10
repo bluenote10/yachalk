@@ -1,8 +1,8 @@
 import pytest
 
-from chalk.utils import hex_to_rgb, get_code_from_rgb
+from yachalk.utils import hex_to_rgb, get_code_from_rgb
 
-from chalk.types import ColorMode
+from yachalk.types import ColorMode
 
 from helper import r
 

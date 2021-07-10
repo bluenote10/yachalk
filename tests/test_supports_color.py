@@ -3,9 +3,9 @@ import sys
 
 from unittest import mock
 
-from chalk.supports_color import _get_env_force_color, detect_color_support
+from yachalk.supports_color import _get_env_force_color, detect_color_support
 
-from chalk.types import ColorMode
+from yachalk.types import ColorMode
 
 
 @mock.patch.dict(os.environ, {}, clear=True)

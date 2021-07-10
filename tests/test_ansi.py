@@ -1,4 +1,4 @@
-from chalk.ansi import rgb_to_ansi_256, ansi_256_to_ansi_16
+from yachalk.ansi import rgb_to_ansi_256, ansi_256_to_ansi_16
 
 
 def test_rgb_to_ansi_256() -> None:

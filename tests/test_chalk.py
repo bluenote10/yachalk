@@ -2,10 +2,10 @@ from typing import List, Set
 
 import pytest
 
-from chalk.types import ColorMode
-from chalk.chalk_factory import ChalkFactory
-from chalk.chalk_builder import ChalkBuilder
-from chalk.ansi import Color, BgColor
+from yachalk.types import ColorMode
+from yachalk.chalk_factory import ChalkFactory
+from yachalk.chalk_builder import ChalkBuilder
+from yachalk.ansi import Color, BgColor
 
 from helper import r
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from chalk import chalk
+from yachalk import chalk
 
 print(f"before {chalk.black('Hello World')} after")
 print(f"before {chalk.red('Hello World')} after")
