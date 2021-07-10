@@ -1,14 +1,12 @@
-from .types import ColorMode
+import sys
+
 from .chalk_factory import ChalkFactory
+from .supports_color import detect_color_support
 
 
 def create_chalk() -> ChalkFactory:
-    return ChalkFactory()
-
-
-def set_color_mode(mode: ColorMode) -> None:
-    global chalk
-    chalk._mode = mode
+    mode = detect_color_support(sys.stdout)
+    return ChalkFactory(mode)
 
 
 chalk = create_chalk()

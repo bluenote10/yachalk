@@ -22,7 +22,7 @@ def test_interface_consistency(chalk: ChalkFactory) -> None:
     funcs_factory = filter_names(dir(chalk))
     funcs_generator = filter_names(dir(ChalkBuilder(mode=ColorMode.FullTrueColor, codes=[])))
 
-    funcs_factory -= {"_create_generator_from_ansi_16_code"}
+    funcs_factory -= {"set_color_mode", "get_color_mode", "_create_generator_from_ansi_16_code"}
     funcs_generator -= {"_codes"}
 
     print(funcs_factory)
@@ -245,6 +245,12 @@ def test_vararg_support(chalk: ChalkFactory) -> None:
     assert r(chalk.black("a", "b", "c", sep="")) == r("\x1b[30mabc\x1b[39m")
     assert r(chalk.black(1, 2, 3)) == r("\x1b[30m1 2 3\x1b[39m")
     assert r(chalk.black(1, 2, 3, sep=", ")) == r("\x1b[30m1, 2, 3\x1b[39m")
+
+
+def test_instance_is_configurable(chalk: ChalkFactory) -> None:
+    assert chalk.get_color_mode() == ColorMode.FullTrueColor
+    chalk.set_color_mode(ColorMode.NoColors)
+    assert chalk.get_color_mode() == ColorMode.NoColors
 
 
 # -----------------------------------------------------------------------------

@@ -29,6 +29,14 @@ class ChalkFactory:
             codes=codes,
         )
 
+    # Color mode control
+
+    def get_color_mode(self) -> ColorMode:
+        return self._mode
+
+    def set_color_mode(self, mode: ColorMode) -> None:
+        self._mode = mode
+
     # General style function
 
     def style(self, code: Union[Code, Ansi16Code]) -> ChalkBuilder:
