@@ -81,7 +81,7 @@ jobs:
         run: ls -la dist
 
       - name: Check deploy condition
-      - run: |
+        run: |
           echo "github.ref: ${{github.ref}}"
           echo "github.event_name: ${{github.event_name}}"
 
