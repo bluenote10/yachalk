@@ -1,18 +1,38 @@
 import re
 
-from typing import List, NamedTuple, Union
+from enum import Enum
+from typing import List, NamedTuple, Optional, Union
+
+from .ansi_codes import (
+    Mod,
+    Color,
+    BgColor,
+    Ansi16Code,
+    wrap_ansi_16,
+    wrap_ansi_256,
+    wrap_ansi_16m,
+)
+from . import ansi_codes
 
 
-from .ansi_codes import Mod, Color, BgColor, Ansi16Code, wrap_ansi_16
+class ColorMode(Enum):
+    NoColors = 0
+    Basic16 = 1
+    Extended256 = 2
+    FullTrueColor = 3
 
 
 class Code(NamedTuple):
     on: str
     off: str
 
+    def doit(self) -> str:
+        return self.on
+
 
 class Generator:
-    def __init__(self, codes: List[Code]):
+    def __init__(self, mode: ColorMode, codes: List[Code]):
+        self._mode = mode
         self._codes = codes
 
     def __call__(self, *args: object, sep: str = " ") -> str:
@@ -42,12 +62,7 @@ class Generator:
 
         return all_on + s + all_off
 
-    @staticmethod
-    def create_from_ansi_16_code(ansi_16_code: Ansi16Code) -> "Generator":
-        on, off = ansi_16_code
-        return Generator(
-            codes=[Code(on=wrap_ansi_16(on), off=wrap_ansi_16(off))],
-        )
+    # General style function
 
     def style(self, code: Union[Code, Ansi16Code]) -> "Generator":
         if isinstance(code, Ansi16Code):
@@ -281,11 +296,46 @@ class Generator:
         self.style(BgColor.grey)
         return self
 
+    # rgb/hex
+
+    def rgb(self, r: int, g: int, b: int) -> "Generator":
+        code = _get_code_from_rgb(r, g, b, self._mode, background=False)
+        if code is not None:
+            self._codes.append(code)
+        return self
+
+    def hex(self, hex: str) -> "Generator":
+        r, g, b = ansi_codes.hex_to_rgb(hex)
+        return self.rgb(r, g, b)
+
+    def bg_rgb(self, r: int, g: int, b: int) -> "Generator":
+        code = _get_code_from_rgb(r, g, b, self._mode, background=True)
+        if code is not None:
+            self._codes.append(code)
+        return self
+
+    def bg_hex(self, hex: str) -> "Generator":
+        r, g, b = ansi_codes.hex_to_rgb(hex)
+        return self.bg_rgb(r, g, b)
+
 
 class Chalk:
-    @staticmethod
-    def style(code: Union[Code, Ansi16Code]) -> Generator:
-        g = Generator([])
+    def __init__(self, mode: ColorMode = ColorMode.FullTrueColor):
+        self._mode = mode
+
+    # Internal helpers
+
+    def _create_generator_from_ansi_16_code(self, ansi_16_code: Ansi16Code) -> "Generator":
+        on, off = ansi_16_code
+        return Generator(
+            mode=self._mode,
+            codes=[Code(on=wrap_ansi_16(on), off=wrap_ansi_16(off))],
+        )
+
+    # General style function
+
+    def style(self, code: Union[Code, Ansi16Code]) -> Generator:
+        g = Generator(self._mode, [])
         g.style(code)
         return g
 
@@ -293,183 +343,218 @@ class Chalk:
 
     @property
     def reset(self) -> Generator:
-        return Generator.create_from_ansi_16_code(Mod.reset)
+        return self._create_generator_from_ansi_16_code(Mod.reset)
 
     @property
     def bold(self) -> Generator:
-        return Generator.create_from_ansi_16_code(Mod.bold)
+        return self._create_generator_from_ansi_16_code(Mod.bold)
 
     @property
     def dim(self) -> Generator:
-        return Generator.create_from_ansi_16_code(Mod.dim)
+        return self._create_generator_from_ansi_16_code(Mod.dim)
 
     @property
     def italic(self) -> Generator:
-        return Generator.create_from_ansi_16_code(Mod.italic)
+        return self._create_generator_from_ansi_16_code(Mod.italic)
 
     @property
     def underline(self) -> Generator:
-        return Generator.create_from_ansi_16_code(Mod.underline)
+        return self._create_generator_from_ansi_16_code(Mod.underline)
 
     @property
     def overline(self) -> Generator:
-        return Generator.create_from_ansi_16_code(Mod.overline)
+        return self._create_generator_from_ansi_16_code(Mod.overline)
 
     @property
     def hidden(self) -> Generator:
-        return Generator.create_from_ansi_16_code(Mod.hidden)
+        return self._create_generator_from_ansi_16_code(Mod.hidden)
 
     @property
     def strikethrough(self) -> Generator:
-        return Generator.create_from_ansi_16_code(Mod.strikethrough)
+        return self._create_generator_from_ansi_16_code(Mod.strikethrough)
 
     # Foreground colors
 
     @property
     def black(self) -> Generator:
-        return Generator.create_from_ansi_16_code(Color.black)
+        return self._create_generator_from_ansi_16_code(Color.black)
 
     @property
     def red(self) -> Generator:
-        return Generator.create_from_ansi_16_code(Color.red)
+        return self._create_generator_from_ansi_16_code(Color.red)
 
     @property
     def green(self) -> Generator:
-        return Generator.create_from_ansi_16_code(Color.green)
+        return self._create_generator_from_ansi_16_code(Color.green)
 
     @property
     def yellow(self) -> Generator:
-        return Generator.create_from_ansi_16_code(Color.yellow)
+        return self._create_generator_from_ansi_16_code(Color.yellow)
 
     @property
     def blue(self) -> Generator:
-        return Generator.create_from_ansi_16_code(Color.blue)
+        return self._create_generator_from_ansi_16_code(Color.blue)
 
     @property
     def magenta(self) -> Generator:
-        return Generator.create_from_ansi_16_code(Color.magenta)
+        return self._create_generator_from_ansi_16_code(Color.magenta)
 
     @property
     def cyan(self) -> Generator:
-        return Generator.create_from_ansi_16_code(Color.cyan)
+        return self._create_generator_from_ansi_16_code(Color.cyan)
 
     @property
     def white(self) -> Generator:
-        return Generator.create_from_ansi_16_code(Color.white)
+        return self._create_generator_from_ansi_16_code(Color.white)
 
     @property
     def black_bright(self) -> Generator:
-        return Generator.create_from_ansi_16_code(Color.black_bright)
+        return self._create_generator_from_ansi_16_code(Color.black_bright)
 
     @property
     def red_bright(self) -> Generator:
-        return Generator.create_from_ansi_16_code(Color.red_bright)
+        return self._create_generator_from_ansi_16_code(Color.red_bright)
 
     @property
     def green_bright(self) -> Generator:
-        return Generator.create_from_ansi_16_code(Color.green_bright)
+        return self._create_generator_from_ansi_16_code(Color.green_bright)
 
     @property
     def yellow_bright(self) -> Generator:
-        return Generator.create_from_ansi_16_code(Color.yellow_bright)
+        return self._create_generator_from_ansi_16_code(Color.yellow_bright)
 
     @property
     def blue_bright(self) -> Generator:
-        return Generator.create_from_ansi_16_code(Color.blue_bright)
+        return self._create_generator_from_ansi_16_code(Color.blue_bright)
 
     @property
     def magenta_bright(self) -> Generator:
-        return Generator.create_from_ansi_16_code(Color.magenta_bright)
+        return self._create_generator_from_ansi_16_code(Color.magenta_bright)
 
     @property
     def cyan_bright(self) -> Generator:
-        return Generator.create_from_ansi_16_code(Color.cyan_bright)
+        return self._create_generator_from_ansi_16_code(Color.cyan_bright)
 
     @property
     def white_bright(self) -> Generator:
-        return Generator.create_from_ansi_16_code(Color.white_bright)
+        return self._create_generator_from_ansi_16_code(Color.white_bright)
 
     @property
     def gray(self) -> Generator:
-        return Generator.create_from_ansi_16_code(Color.gray)
+        return self._create_generator_from_ansi_16_code(Color.gray)
 
     @property
     def grey(self) -> Generator:
-        return Generator.create_from_ansi_16_code(Color.grey)
+        return self._create_generator_from_ansi_16_code(Color.grey)
 
     # Background colors
 
     @property
     def bg_black(self) -> Generator:
-        return Generator.create_from_ansi_16_code(BgColor.black)
+        return self._create_generator_from_ansi_16_code(BgColor.black)
 
     @property
     def bg_red(self) -> Generator:
-        return Generator.create_from_ansi_16_code(BgColor.red)
+        return self._create_generator_from_ansi_16_code(BgColor.red)
 
     @property
     def bg_green(self) -> Generator:
-        return Generator.create_from_ansi_16_code(BgColor.green)
+        return self._create_generator_from_ansi_16_code(BgColor.green)
 
     @property
     def bg_yellow(self) -> Generator:
-        return Generator.create_from_ansi_16_code(BgColor.yellow)
+        return self._create_generator_from_ansi_16_code(BgColor.yellow)
 
     @property
     def bg_blue(self) -> Generator:
-        return Generator.create_from_ansi_16_code(BgColor.blue)
+        return self._create_generator_from_ansi_16_code(BgColor.blue)
 
     @property
     def bg_magenta(self) -> Generator:
-        return Generator.create_from_ansi_16_code(BgColor.magenta)
+        return self._create_generator_from_ansi_16_code(BgColor.magenta)
 
     @property
     def bg_cyan(self) -> Generator:
-        return Generator.create_from_ansi_16_code(BgColor.cyan)
+        return self._create_generator_from_ansi_16_code(BgColor.cyan)
 
     @property
     def bg_white(self) -> Generator:
-        return Generator.create_from_ansi_16_code(BgColor.white)
+        return self._create_generator_from_ansi_16_code(BgColor.white)
 
     @property
     def bg_black_bright(self) -> Generator:
-        return Generator.create_from_ansi_16_code(BgColor.black_bright)
+        return self._create_generator_from_ansi_16_code(BgColor.black_bright)
 
     @property
     def bg_red_bright(self) -> Generator:
-        return Generator.create_from_ansi_16_code(BgColor.red_bright)
+        return self._create_generator_from_ansi_16_code(BgColor.red_bright)
 
     @property
     def bg_green_bright(self) -> Generator:
-        return Generator.create_from_ansi_16_code(BgColor.green_bright)
+        return self._create_generator_from_ansi_16_code(BgColor.green_bright)
 
     @property
     def bg_yellow_bright(self) -> Generator:
-        return Generator.create_from_ansi_16_code(BgColor.yellow_bright)
+        return self._create_generator_from_ansi_16_code(BgColor.yellow_bright)
 
     @property
     def bg_blue_bright(self) -> Generator:
-        return Generator.create_from_ansi_16_code(BgColor.blue_bright)
+        return self._create_generator_from_ansi_16_code(BgColor.blue_bright)
 
     @property
     def bg_magenta_bright(self) -> Generator:
-        return Generator.create_from_ansi_16_code(BgColor.magenta_bright)
+        return self._create_generator_from_ansi_16_code(BgColor.magenta_bright)
 
     @property
     def bg_cyan_bright(self) -> Generator:
-        return Generator.create_from_ansi_16_code(BgColor.cyan_bright)
+        return self._create_generator_from_ansi_16_code(BgColor.cyan_bright)
 
     @property
     def bg_white_bright(self) -> Generator:
-        return Generator.create_from_ansi_16_code(BgColor.white_bright)
+        return self._create_generator_from_ansi_16_code(BgColor.white_bright)
 
     @property
     def bg_gray(self) -> Generator:
-        return Generator.create_from_ansi_16_code(BgColor.gray)
+        return self._create_generator_from_ansi_16_code(BgColor.gray)
 
     @property
     def bg_grey(self) -> Generator:
-        return Generator.create_from_ansi_16_code(BgColor.grey)
+        return self._create_generator_from_ansi_16_code(BgColor.grey)
+
+    # rgb/hex
+
+    def rgb(self, r: int, g: int, b: int) -> Generator:
+        code = _get_code_from_rgb(r, g, b, self._mode, background=False)
+        return Generator(self._mode, [code] if code is not None else [])
+
+    def hex(self, hex: str) -> Generator:
+        r, g, b = ansi_codes.hex_to_rgb(hex)
+        return self.rgb(r, g, b)
+
+    def bg_rgb(self, r: int, g: int, b: int) -> Generator:
+        code = _get_code_from_rgb(r, g, b, self._mode, background=True)
+        return Generator(self._mode, [code] if code is not None else [])
+
+    def bg_hex(self, hex: str) -> Generator:
+        r, g, b = ansi_codes.hex_to_rgb(hex)
+        return self.bg_rgb(r, g, b)
+
+
+def _get_code_from_rgb(r: int, g: int, b: int, mode: ColorMode, background: bool) -> Optional[Code]:
+    if mode == ColorMode.FullTrueColor:
+        code = wrap_ansi_16m(r, g, b, background=background)
+    elif mode == ColorMode.Extended256:
+        code_256 = ansi_codes.rgb_to_ansi_256(r, g, b)
+        code = wrap_ansi_256(code_256, background=background)
+    elif mode == ColorMode.Basic16:
+        code_256 = ansi_codes.rgb_to_ansi_256(r, g, b)
+        code_16 = ansi_codes.ansi_256_to_ansi_16(code_256)
+        code = wrap_ansi_16(code_16, background=background)
+    else:
+        return None
+
+    close = ansi_codes.BG_COLOR_CLOSE if background else ansi_codes.COLOR_CLOSE
+    return Code(on=code, off=wrap_ansi_16(close))
 
 
 def create_chalk() -> Chalk:

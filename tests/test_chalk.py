@@ -1,7 +1,7 @@
 from typing import List, Set
 
 from chalk import chalk
-from chalk.chalk import Generator
+from chalk.chalk import Generator, ColorMode
 from chalk.ansi_codes import Color, BgColor
 
 
@@ -18,9 +18,10 @@ def test_interface_consistency() -> None:
         return set(name for name in names if not name.startswith("__"))
 
     funcs_factory = filter_names(dir(chalk))
-    funcs_generator = filter_names(dir(Generator([])))
+    funcs_generator = filter_names(dir(Generator(mode=ColorMode.FullTrueColor, codes=[])))
 
-    funcs_generator = funcs_generator - {"create_from_ansi_16_code", "_codes"}
+    funcs_factory -= {"_create_generator_from_ansi_16_code"}
+    funcs_generator -= {"_codes"}
 
     print(funcs_factory)
     print(funcs_generator)
@@ -83,7 +84,7 @@ def test_basics() -> None:
 
 def test_basics_chained() -> None:
     def gen() -> Generator:
-        return Generator([])
+        return Generator(ColorMode.FullTrueColor, [])
 
     assert r(gen().reset("foo")) == r("\x1b[0mfoo\x1b[0m")
     assert r(gen().bold("foo")) == r("\x1b[1mfoo\x1b[22m")

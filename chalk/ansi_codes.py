@@ -25,50 +25,54 @@ class Mod:
     strikethrough = Ansi16Code(9, 29)
 
 
+COLOR_CLOSE = 39
+BG_COLOR_CLOSE = 49
+
+
 class Color:
-    black = Ansi16Code(30, 39)
-    red = Ansi16Code(31, 39)
-    green = Ansi16Code(32, 39)
-    yellow = Ansi16Code(33, 39)
-    blue = Ansi16Code(34, 39)
-    magenta = Ansi16Code(35, 39)
-    cyan = Ansi16Code(36, 39)
-    white = Ansi16Code(37, 39)
+    black = Ansi16Code(30, COLOR_CLOSE)
+    red = Ansi16Code(31, COLOR_CLOSE)
+    green = Ansi16Code(32, COLOR_CLOSE)
+    yellow = Ansi16Code(33, COLOR_CLOSE)
+    blue = Ansi16Code(34, COLOR_CLOSE)
+    magenta = Ansi16Code(35, COLOR_CLOSE)
+    cyan = Ansi16Code(36, COLOR_CLOSE)
+    white = Ansi16Code(37, COLOR_CLOSE)
 
-    black_bright = Ansi16Code(90, 39)
-    red_bright = Ansi16Code(91, 39)
-    green_bright = Ansi16Code(92, 39)
-    yellow_bright = Ansi16Code(93, 39)
-    blue_bright = Ansi16Code(94, 39)
-    magenta_bright = Ansi16Code(95, 39)
-    cyan_bright = Ansi16Code(96, 39)
-    white_bright = Ansi16Code(97, 39)
+    black_bright = Ansi16Code(90, COLOR_CLOSE)
+    red_bright = Ansi16Code(91, COLOR_CLOSE)
+    green_bright = Ansi16Code(92, COLOR_CLOSE)
+    yellow_bright = Ansi16Code(93, COLOR_CLOSE)
+    blue_bright = Ansi16Code(94, COLOR_CLOSE)
+    magenta_bright = Ansi16Code(95, COLOR_CLOSE)
+    cyan_bright = Ansi16Code(96, COLOR_CLOSE)
+    white_bright = Ansi16Code(97, COLOR_CLOSE)
 
-    gray = Ansi16Code(90, 39)
-    grey = Ansi16Code(90, 39)
+    gray = Ansi16Code(90, COLOR_CLOSE)
+    grey = Ansi16Code(90, COLOR_CLOSE)
 
 
 class BgColor:
-    black = Ansi16Code(40, 49)
-    red = Ansi16Code(41, 49)
-    green = Ansi16Code(42, 49)
-    yellow = Ansi16Code(43, 49)
-    blue = Ansi16Code(44, 49)
-    magenta = Ansi16Code(45, 49)
-    cyan = Ansi16Code(46, 49)
-    white = Ansi16Code(47, 49)
+    black = Ansi16Code(40, BG_COLOR_CLOSE)
+    red = Ansi16Code(41, BG_COLOR_CLOSE)
+    green = Ansi16Code(42, BG_COLOR_CLOSE)
+    yellow = Ansi16Code(43, BG_COLOR_CLOSE)
+    blue = Ansi16Code(44, BG_COLOR_CLOSE)
+    magenta = Ansi16Code(45, BG_COLOR_CLOSE)
+    cyan = Ansi16Code(46, BG_COLOR_CLOSE)
+    white = Ansi16Code(47, BG_COLOR_CLOSE)
 
-    black_bright = Ansi16Code(100, 49)
-    red_bright = Ansi16Code(101, 49)
-    green_bright = Ansi16Code(102, 49)
-    yellow_bright = Ansi16Code(103, 49)
-    blue_bright = Ansi16Code(104, 49)
-    magenta_bright = Ansi16Code(105, 49)
-    cyan_bright = Ansi16Code(106, 49)
-    white_bright = Ansi16Code(107, 49)
+    black_bright = Ansi16Code(100, BG_COLOR_CLOSE)
+    red_bright = Ansi16Code(101, BG_COLOR_CLOSE)
+    green_bright = Ansi16Code(102, BG_COLOR_CLOSE)
+    yellow_bright = Ansi16Code(103, BG_COLOR_CLOSE)
+    blue_bright = Ansi16Code(104, BG_COLOR_CLOSE)
+    magenta_bright = Ansi16Code(105, BG_COLOR_CLOSE)
+    cyan_bright = Ansi16Code(106, BG_COLOR_CLOSE)
+    white_bright = Ansi16Code(107, BG_COLOR_CLOSE)
 
-    gray = Ansi16Code(100, 49)
-    grey = Ansi16Code(100, 49)
+    gray = Ansi16Code(100, BG_COLOR_CLOSE)
+    grey = Ansi16Code(100, BG_COLOR_CLOSE)
 
 
 _ANSI_BACKGROUND_OFFSET = 10

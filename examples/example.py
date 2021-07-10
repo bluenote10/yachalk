@@ -18,3 +18,10 @@ print(chalk.bold(f"foo {chalk.red.dim('bar')} baz"))
 
 
 print(chalk.red.bg_blue.underline("foo"))
+
+
+# rgb
+for i in range(255):
+    print("before", chalk.red.rgb(40, i, 100)("colored in rgb"), "after")
+
+print("before", chalk.red.hex("24F")("colored in hex"), "after")
