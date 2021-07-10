@@ -57,6 +57,7 @@ jobs:
           ./scripts/test
 
       - name: Upload to codecov.io
+        if: matrix.python-version == '3.8'
         # https://github.com/codecov/codecov-action
         uses: codecov/codecov-action@v1
         with:
