@@ -7,5 +7,7 @@ __pycache__/
 .cov_html/
 .coverage
 
-examples/check*.py
+build/
+dist/
 
+examples/check*.py

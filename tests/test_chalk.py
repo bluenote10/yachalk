@@ -10,7 +10,7 @@ from yachalk.ansi import Color, BgColor
 from helper import r
 
 
-@pytest.fixture  # type: ignore
+@pytest.fixture
 def chalk() -> ChalkFactory:
     return ChalkFactory(mode=ColorMode.FullTrueColor)
 
