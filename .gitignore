@@ -13,3 +13,6 @@ build/
 dist/
 
 examples/check*.py
+
+media/comparison.pdf
+.~lock.*

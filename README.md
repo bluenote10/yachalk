@@ -33,7 +33,7 @@ All **credits go to [Sindre Sorhus](https://github.com/sindresorhus)**.
 
 - Fluent, auto-complete-friendly API for maximum coding efficiency
 - Ability to nest styles
-- Proper handling of edge cases (same test cases as Chalk)
+- Proper handling of styling edge cases (same test cases as Chalk)
 - Auto-detection of terminal color capabilities
 - [256/Truecolor color support](#256-and-truecolor-color-support), with fallback to basic colors depending on capabilities
 - Same conventions as Chalk to manually control color modes via `FORCE_COLOR`
@@ -100,6 +100,37 @@ warning = chalk.hex("#FFA500")
 print(error("Error!"))
 print(warning("Warning!"))
 ```
+
+
+## Prior art: Why yet another chalk clone?
+
+The Python ecosystem has a large number libraries for terminal styling/coloring. However, after working with Chalk in JavaScript for a while, I always missed to have the same convenience in Python. Inspired by Chalk, I wanted to have a terminal styling library satisfying the following design criteria:
+
+- **Automatic reset handling**: Many Python libraries require manual handling of ANSI reset codes. This is error prone, and a common source of coloring issues. It also means that these libraries cannot handle advanced edge cases like proper handling of newlines in all contexts, because that requires internal reset handling.
+- **Single symbol import**: Some libraries require to import special symbols for foreground/background/modifiers/... depending on the desired styling. This is tedious in my opinion, because you have to adapt the imports all the time when you change the particular styling.
+- **Auto-complete friendly**: I don't want to memorize a style/color API, I'd like to have full auto-complete support. Some existing Chalk clones seem to generate all style properties dynamically, which means that an IDE cannot support with auto-completion.
+- **Support of nested styles**: Sometimes it is convenient to embed a style into an existing styled context. With Chalk this simply works. None of the libraries I tried have support of nested styles.
+- **Support of edge cases**: Chalk has solutions for many edge cases like newline handling, or certain challenges in nested styles. The Python libraries I tried didn't support these. Yachalk is tested against the same test cases as Chalk, so it should support them all.
+- **Not print focused**: Some libraries provide an API with a focus on offering modified `print` functions. I prefer the single responsibility principle: Styling should only do styling, and return a string. This still leaves the possibility to print the string, write it to a file, or pass it around freely.
+- **True color support**: Today most terminal have true color support, so it makes sense to support it in the API. Many older Python libraries only support the basic 16 colors.
+- **Capabilities auto detection / fallbacks**: Chalk is fully backwards compatible on dumber terminals, by approximating colors with what is available on a particular terminal. I haven't found this feature in existing Python libraries.
+- **Zero dependencies**: Some libraries are based e.g. based on curses, which is a heavy dependency for something as simple as styling/coloring.
+- **Fully typed**: I like optional typing, but often library type stubs come with bad types. Yachalk runs in strict mypy mode, which means that no stubs are needed and its type should be correct by design.
+
+I started collecting existing libraries in a feature matrix, but since I keep finding more and more libraries, I've given up on filling it completely 😉. Nonetheless, feel free to open an issue if it contains an error or misses an important solution.
+
+![comparison](media/comparison.png)
+
+Links to related projects:
+- [termcolor](https://pypi.org/project/termcolor/)
+- [colored](https://gitlab.com/dslackw/colored)
+- [ansicolors](https://pypi.org/project/ansicolors/)
+- [sty](https://github.com/feluxe/sty)
+- [blessings](https://github.com/erikrose/blessings)
+- [rich](https://github.com/willmcgugan/rich)
+- [style (clr)](https://github.com/lmittmann/style)
+- [pychalk](https://github.com/anthonyalmarza/chalk)
+- [simple_chalk](https://pypi.org/project/simple-chalk/)
 
 
 ## API
