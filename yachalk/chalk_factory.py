@@ -19,7 +19,7 @@ class ChalkFactory:
     # Internal helpers
 
     def _create_generator_from_ansi_16_code(self, ansi_16_code: Ansi16Code) -> "ChalkBuilder":
-        if self._mode != ColorMode.NoColors:
+        if self._mode != ColorMode.AllOff:
             on, off = ansi_16_code
             codes = [Code(on=wrap_ansi_16(on), off=wrap_ansi_16(off))]
         else:
@@ -36,6 +36,18 @@ class ChalkFactory:
 
     def set_color_mode(self, mode: ColorMode) -> None:
         self._mode = mode
+
+    def disable_all_ansi(self) -> None:
+        self.set_color_mode(ColorMode.AllOff)
+
+    def enable_basic_colors(self) -> None:
+        self.set_color_mode(ColorMode.Basic16)
+
+    def enable_extended_colors(self) -> None:
+        self.set_color_mode(ColorMode.Extended256)
+
+    def enable_full_colors(self) -> None:
+        self.set_color_mode(ColorMode.FullTrueColor)
 
     # General style function
 

@@ -11,7 +11,7 @@
 
 This is a feature-complete clone of the awesome [Chalk](https://github.com/chalk/chalk) (JavaScript) library.
 
-All **credits go to Sindre Sorhus**.
+All **credits go to [Sindre Sorhus](https://github.com/sindresorhus)**.
 
 [![PyPI version](https://badge.fury.io/py/yachalk.svg)](https://badge.fury.io/py/yachalk)
 [![Build Status](https://github.com/bluenote10/yachalk/workflows/ci/badge.svg)](https://github.com/bluenote10/yachalk/actions?query=workflow%3Aci)
@@ -89,7 +89,7 @@ print(chalk.rgb(123, 45, 67).underline("Underlined reddish color"))
 print(chalk.hex("#DEADED").bold("Bold gray!"))
 ```
 
-Easily define your own themes:
+Easily define and re-use your own themes:
 
 ```python
 from yachalk import chalk
@@ -104,13 +104,49 @@ print(warning("Warning!"))
 
 ## API
 
-### chalk.`<style>[.<style>...](string, [string...])`
+In general there is no need to remember the API, because it is written in a way that it fully auto-completes in common IDEs:
+
+![auto_complete](media/auto_complete.gif)
+
+**`chalk.<style>[.<style>...](string, [string...], sep=" ")`**
 
 Example: `chalk.red.bold.underline("Hello", "world")`
 
 Chain [styles](#styles) and call the last one as a method with a string argument. Order doesn't matter, and later styles take precedent in case of a conflict. This simply means that `chalk.red.yellow.green` is equivalent to `chalk.green`.
 
 Multiple arguments will be separated by a space, but the separator can also be passed in as keyword argument `sep="..."`.
+
+
+**`chalk.set_color_mode(mode: ColorMode)`**
+
+Set the color mode manually. `ColorMode` is an enum with the value:
+
+- `ColorMode.AllOff`
+- `ColorMode.Basic16` (basic 16-color ANSI colors)
+- `ColorMode.Extended256` (256-color ANSI color mode)
+- `ColorMode.FullTrueColor` (full true color support)
+
+See [color mode control](#color-mode-control) for more details.
+
+**`chalk.disable_all_ansi()`**
+
+Shorthand for `chalk.set_color_mode(ColorMode.AllOff)`.
+
+**`chalk.enable_basic_colors()`**
+
+Shorthand for `chalk.set_color_mode(ColorMode.Basic16)`.
+
+**`chalk.enable_extended_colors()`**
+
+Shorthand for `chalk.set_color_mode(ColorMode.Extended256)`.
+
+**`chalk.enable_full_colors()`**
+
+Shorthand for `chalk.set_color_mode(ColorMode.FullTrueColor)`.
+
+**`chalk.get_color_mode() -> ColorMode`**
+
+Return current color mode.
 
 
 ## Styles
@@ -182,3 +218,62 @@ Background versions of these models are prefixed with `bg_`:
 - `chalk.bg_rgb(15, 100, 204)("Hello!")`
 - `chalk.bg_hex("#DEADED").underline("Hello, world!")`
 
+
+## Color mode control
+
+The imported symbol `chalk` is a singleton that is initialized with the color mode resulting from the auto-detection. This means that if you run on a terminal that has e.g. only basic 16 colors support, you can still use the full RGB/HEX API, but the resulting colors would be approximated by the available colors. If the terminal doesn't support any ANSI escape codes, the resulting strings would be completely free of any ANSI codes.
+
+If you would like to take manual control of the color mode, you have three options.
+
+**1. Use environment variables**
+
+Chalk has introduced the convention to use the `FORCE_COLOR` environment variable as an override in the auto-detection. The semantics are:
+
+- `FORCE_COLOR=0` enforces `ColorMode.AllOff`.
+- `FORCE_COLOR=1` enforces `ColorMode.Basic16`.
+- `FORCE_COLOR=2` enforces `ColorMode.Extended256`.
+- `FORCE_COLOR=3` enforces `ColorMode.FullTrueColor`.
+
+This can be a convenient solution in CI/cloud-based contexts.
+
+
+**2. Set the color mode manually on the `chalk` instance**
+
+If you don't care about auto-detection, you might as well set your desired color mode unconditionally.
+
+The `chalk` singleton supports setting the color mode via `chalk.disable_all_ansi`, `chalk.enable_..._colors`, or `chalk.set_color_mode`.
+
+A reasonable place to configure the singleton is e.g. at the beginning of a `main` function, similar to where logging is configured.
+
+
+**3. Use your own `chalk` instance**
+
+For advanced use cases that e.g. require to dynamically switch the color mode in a multi-threaded context, you can opt-out of the convenience of using a singleton, and use a custom `chalk` instances where desired. In general `chalk` is just an instance of `ChalkFactory`, which takes the color mode as input in its constructor.
+
+
+```python
+from yachalk import ChalkFactory
+
+def some_function():
+    # create your own chalk instance with explicit mode control
+    chalk = ChalkFactory(ColorMode.FullTrueColor)
+
+    # ...
+
+    colored_messages.append(chalk.red("An error occurred"))
+```
+
+Or if you'd like to use your own mode-detection logic, you could create the `chalk` singleton yourself in one of your modules
+
+```python
+# e.g. in my_chalk.py
+from yachalk import ChalkFactory
+
+def custom_color_mode_detection() -> ColorMode:
+    # ...
+    return ColorMode.Basic16
+
+chalk = ChalkFactory(custom_color_mode_detection())
+```
+
+and replace usages of `from yachalk import chalk` with `from my_chalk import chalk`.

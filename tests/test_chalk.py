@@ -22,7 +22,15 @@ def test_interface_consistency(chalk: ChalkFactory) -> None:
     funcs_factory = filter_names(dir(chalk))
     funcs_generator = filter_names(dir(ChalkBuilder(mode=ColorMode.FullTrueColor, codes=[])))
 
-    funcs_factory -= {"set_color_mode", "get_color_mode", "_create_generator_from_ansi_16_code"}
+    funcs_factory -= {
+        "set_color_mode",
+        "get_color_mode",
+        "disable_all_ansi",
+        "enable_basic_colors",
+        "enable_extended_colors",
+        "enable_full_colors",
+        "_create_generator_from_ansi_16_code",
+    }
     funcs_generator -= {"_codes"}
 
     print(funcs_factory)
@@ -159,7 +167,7 @@ def test_rgb_hex() -> None:
     assert r(chalk.bg_rgb(20, 40, 60)("foo")) == r("\x1b[40mfoo\x1b[49m")
     assert r(chalk.bg_hex("14283c")("foo")) == r("\x1b[40mfoo\x1b[49m")
 
-    chalk = ChalkFactory(mode=ColorMode.NoColors)
+    chalk = ChalkFactory(mode=ColorMode.AllOff)
     assert r(chalk.rgb(20, 40, 60)("foo")) == r("foo")
     assert r(chalk.hex("14283c")("foo")) == r("foo")
     assert r(chalk.bg_rgb(20, 40, 60)("foo")) == r("foo")
@@ -192,7 +200,7 @@ def test_rgb_hex_chained() -> None:
     assert r(gen1().bg_hex("14283c")("foo")) == r("\x1b[40mfoo\x1b[49m")
 
     def gen0() -> ChalkBuilder:
-        return ChalkBuilder(ColorMode.NoColors, [])
+        return ChalkBuilder(ColorMode.AllOff, [])
 
     assert r(gen0().rgb(20, 40, 60)("foo")) == r("foo")
     assert r(gen0().hex("14283c")("foo")) == r("foo")
@@ -201,12 +209,12 @@ def test_rgb_hex_chained() -> None:
 
 
 def test_disabled_mode() -> None:
-    chalk = ChalkFactory(mode=ColorMode.NoColors)
+    chalk = ChalkFactory(mode=ColorMode.AllOff)
     assert r(chalk.black("foo")) == r("foo")
     assert r(chalk.style(Color.black)("foo")) == r("foo")
 
     def gen() -> ChalkBuilder:
-        return ChalkBuilder(ColorMode.NoColors, [])
+        return ChalkBuilder(ColorMode.AllOff, [])
 
     assert r(gen().black("foo")) == r("foo")
     assert r(gen().style(Color.black)("foo")) == r("foo")
@@ -249,8 +257,20 @@ def test_vararg_support(chalk: ChalkFactory) -> None:
 
 def test_instance_is_configurable(chalk: ChalkFactory) -> None:
     assert chalk.get_color_mode() == ColorMode.FullTrueColor
-    chalk.set_color_mode(ColorMode.NoColors)
-    assert chalk.get_color_mode() == ColorMode.NoColors
+    chalk.set_color_mode(ColorMode.AllOff)
+    assert chalk.get_color_mode() == ColorMode.AllOff
+
+    chalk.enable_full_colors()
+    assert chalk.get_color_mode() == ColorMode.FullTrueColor
+
+    chalk.enable_extended_colors()
+    assert chalk.get_color_mode() == ColorMode.Extended256
+
+    chalk.enable_basic_colors()
+    assert chalk.get_color_mode() == ColorMode.Basic16
+
+    chalk.disable_all_ansi()
+    assert chalk.get_color_mode() == ColorMode.AllOff
 
 
 # -----------------------------------------------------------------------------

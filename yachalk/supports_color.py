@@ -27,7 +27,7 @@ def _get_env_force_color() -> Optional[ColorMode]:
         return ColorMode.Basic16
 
     if force_color.lower() == "false":
-        return ColorMode.NoColors
+        return ColorMode.AllOff
 
     try:
         level = int(force_color)
@@ -49,10 +49,10 @@ def detect_color_support(stream: TextIO = sys.stdout) -> ColorMode:
         return force_color
 
     elif not is_tty:
-        return ColorMode.NoColors
+        return ColorMode.AllOff
 
     elif os.environ.get("TERM") == "dumb":
-        return ColorMode.NoColors
+        return ColorMode.AllOff
 
     elif platform.system() == "Windows":
         # https://stackoverflow.com/a/66554956/1804173
@@ -89,7 +89,7 @@ def detect_color_support(stream: TextIO = sys.stdout) -> ColorMode:
         ):
             return ColorMode.Basic16
         else:
-            return ColorMode.NoColors
+            return ColorMode.AllOff
 
     elif "TEAMCITY_VERSION" in os.environ:
         team_city_version = os.environ["TEAMCITY_VERSION"]
@@ -97,7 +97,7 @@ def detect_color_support(stream: TextIO = sys.stdout) -> ColorMode:
         if m is not None:
             return ColorMode.Basic16
         else:
-            return ColorMode.NoColors
+            return ColorMode.AllOff
 
     elif os.environ.get("COLORTERM") == "truecolor":
         return ColorMode.FullTrueColor
@@ -137,4 +137,4 @@ def detect_color_support(stream: TextIO = sys.stdout) -> ColorMode:
         return ColorMode.Basic16
 
     else:
-        return ColorMode.NoColors
+        return ColorMode.AllOff

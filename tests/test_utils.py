@@ -25,8 +25,8 @@ def test_hex_to_rgb() -> None:
 
 
 def test_get_code_from_rgb() -> None:
-    assert get_code_from_rgb(20, 40, 60, ColorMode.NoColors, background=False) is None
-    assert get_code_from_rgb(20, 40, 60, ColorMode.NoColors, background=True) is None
+    assert get_code_from_rgb(20, 40, 60, ColorMode.AllOff, background=False) is None
+    assert get_code_from_rgb(20, 40, 60, ColorMode.AllOff, background=True) is None
 
     code = get_code_from_rgb(20, 40, 60, ColorMode.Basic16, background=False)
     assert code is not None

@@ -3,7 +3,7 @@ from typing import NamedTuple
 
 
 class ColorMode(Enum):
-    NoColors = 0
+    AllOff = 0
     Basic16 = 1
     Extended256 = 2
     FullTrueColor = 3
