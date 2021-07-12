@@ -1,7 +1,7 @@
 <h1 align="center">
 	<br>
 	<br>
-	<img width="320" src="media/logo.png" alt="Chalk">
+	<img width="320" src="https://raw.githubusercontent.com/bluenote10/yachalk/master/media/logo.png" alt="Chalk">
 	<br>
 	<br>
 	<br>
@@ -21,7 +21,7 @@ All **credits go to [Sindre Sorhus](https://github.com/sindresorhus)**.
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](LICENSE)
 
 
-<img src="media/demo1.svg" width="900">
+<img src="https://raw.githubusercontent.com/bluenote10/yachalk/master/media/demo1.svg" width="900">
 
 <br>
 
@@ -119,7 +119,7 @@ The Python ecosystem has a large number libraries for terminal styling/coloring.
 
 I started collecting existing libraries in a feature matrix, but since I keep finding more and more libraries, I've given up on filling it completely 😉. Nonetheless, feel free to open an issue if it contains an error or misses an important solution.
 
-![comparison](media/comparison.png)
+![comparison](https://raw.githubusercontent.com/bluenote10/yachalk/master/media/comparison.png)
 
 Links to related projects:
 - [termcolor](https://pypi.org/project/termcolor/)
@@ -137,7 +137,7 @@ Links to related projects:
 
 In general there is no need to remember the API, because it is written in a way that it fully auto-completes in common IDEs:
 
-![auto_complete](media/auto_complete.gif)
+![auto_complete](https://raw.githubusercontent.com/bluenote10/yachalk/master/media/auto_complete.gif)
 
 **`chalk.<style>[.<style>...](string, [string...], sep=" ")`**
 
