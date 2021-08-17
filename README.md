@@ -220,7 +220,7 @@ Return current color mode.
 - `bg_green`
 - `bg_yellow`
 - `bg_blue`
-- `bg_nagenta`
+- `bg_magenta`
 - `bg_cyan`
 - `bg_white`
 - `bg_black_bright` (alias: `bg_gray`, `bg_grey`)
