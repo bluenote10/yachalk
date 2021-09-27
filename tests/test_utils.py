@@ -14,6 +14,9 @@ def test_hex_to_rgb() -> None:
     assert hex_to_rgb("102030") == (16, 32, 48)
     assert hex_to_rgb("abcdef") == (171, 205, 239)
 
+    assert hex_to_rgb("#fff") == (255, 255, 255)
+    assert hex_to_rgb("#ffffff") == (255, 255, 255)
+
     with pytest.raises(ValueError, match="is not a valid hex literal"):
         hex_to_rgb("12345")
 
