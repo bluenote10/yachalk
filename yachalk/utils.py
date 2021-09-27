@@ -8,6 +8,9 @@ from . import ansi
 
 def hex_to_rgb(hex: str) -> Tuple[int, int, int]:
 
+    if hex.startswith("#"):
+        hex = hex[1:]
+
     if len(hex) == 3:
         hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2]
 
