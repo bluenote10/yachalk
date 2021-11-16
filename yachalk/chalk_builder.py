@@ -36,6 +36,14 @@ class ChalkBuilder:
                 # https://github.com/doowb/ansi-colors#nested-styling-bug
                 s = s.replace(code.off, code.off + code.on)
 
+        # Handle nested resets
+        s = re.sub(
+            "(\x1b\\[0m.*?\x1b\\[0m)",
+            all_off + "\\1" + all_on,
+            s,
+        )
+
+        # Handle newlines by closing and re-opening all styles
         if "\n" in s:
             s = re.sub(
                 r"(\r?\n)",
