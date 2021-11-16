@@ -273,6 +273,23 @@ def test_instance_is_configurable(chalk: ChalkFactory) -> None:
     assert chalk.get_color_mode() == ColorMode.AllOff
 
 
+def test_nested_reset(chalk: ChalkFactory) -> None:
+    s = chalk.bold.blue(f"before {chalk.reset('reset')} after")
+    assert r(s) == r(
+        "\x1b[1m\x1b[34mbefore \x1b[22m\x1b[39m\x1b[0mreset\x1b[0m\x1b[1m\x1b[34m after\x1b[22m\x1b[39m"  # noqa
+    )
+    s = chalk.red(
+        "outer "
+        + chalk.bold.blue(f"before {chalk.reset('reset')} after")
+        + " outer "
+        + chalk.reset("reset")
+        + " outer"
+    )
+    assert r(s) == r(
+        "\x1b[31mouter \x1b[1m\x1b[34mbefore \x1b[22m\x1b[39m\x1b[31m\x1b[39m\x1b[0mreset\x1b[0m\x1b[31m\x1b[1m\x1b[34m after\x1b[22m\x1b[39m\x1b[31m outer \x1b[39m\x1b[0mreset\x1b[0m\x1b[31m outer\x1b[39m"  # noqa
+    )
+
+
 # -----------------------------------------------------------------------------
 # Test cases from Chalk
 # -----------------------------------------------------------------------------

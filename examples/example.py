@@ -25,3 +25,14 @@ for i in range(255):
     print("before", chalk.red.rgb(40, i, 100)("colored in rgb"), "after")
 
 print("before", chalk.red.hex("24F")("colored in hex"), "after")
+
+print(chalk.bold.blue(f"before {chalk.reset('reset')} after"))
+print(
+    chalk.red(
+        "outer "
+        + chalk.bold.blue(f"before {chalk.reset('reset')} after")
+        + " outer "
+        + chalk.reset("reset")
+        + " outer"
+    )
+)
