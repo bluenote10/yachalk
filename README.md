@@ -69,6 +69,7 @@ print(chalk.blue("Hello") + " World" + chalk.red("!"))
 print(chalk.blue.bg_red.bold("Hello world!"))
 
 # Use within f-strings
+num_results = 12345
 print(f"Found {chalk.bold(num_results)} results.")
 
 # Pass in multiple arguments
