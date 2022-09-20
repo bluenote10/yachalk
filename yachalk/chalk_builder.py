@@ -19,13 +19,15 @@ class ChalkBuilder:
         self._codes = codes
 
     def __call__(self, *args: object, sep: str = " ") -> str:
+        all_on = "".join([code.on for code in self._codes])
+        all_off = "".join([code.off for code in self._codes])
+
+        if len(args) == 0:
+            return all_on
         if len(args) == 1 and isinstance(args[0], str):
             s = args[0]
         else:
             s = sep.join([str(arg) for arg in args])
-
-        all_on = "".join([code.on for code in self._codes])
-        all_off = "".join([code.off for code in self._codes])
 
         if "\u001b" in s:
             for code in self._codes:
