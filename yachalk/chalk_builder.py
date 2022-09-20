@@ -17,17 +17,16 @@ class ChalkBuilder:
     def __init__(self, mode: ColorMode, codes: List[Code]):
         self._mode = mode
         self._codes = codes
+        self._reset = True
 
     def __call__(self, *args: object, sep: str = " ") -> str:
-        all_on = "".join([code.on for code in self._codes])
-        all_off = "".join([code.off for code in self._codes])
-
-        if len(args) == 0:
-            return all_on
-        elif len(args) == 1 and isinstance(args[0], str):
+        if len(args) == 1 and isinstance(args[0], str):
             s = args[0]
         else:
             s = sep.join([str(arg) for arg in args])
+
+        all_on = "".join([code.on for code in self._codes])
+        all_off = "".join([code.off for code in self._codes])
 
         if "\u001b" in s:
             for code in self._codes:
@@ -53,7 +52,7 @@ class ChalkBuilder:
                 s,
             )
 
-        return all_on + s + all_off
+        return all_on + s + ('',all_off)[self._reset]
 
     # General style function
 
@@ -69,6 +68,11 @@ class ChalkBuilder:
     @property
     def reset(self) -> "ChalkBuilder":
         self.style(Mod.reset)
+        return self
+
+    @property
+    def nr(self) -> "ChalkBuilder":
+        self._reset = False
         return self
 
     @property
