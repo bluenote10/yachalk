@@ -24,7 +24,7 @@ class ChalkBuilder:
 
         if len(args) == 0:
             return all_on
-        if len(args) == 1 and isinstance(args[0], str):
+        elif len(args) == 1 and isinstance(args[0], str):
             s = args[0]
         else:
             s = sep.join([str(arg) for arg in args])
