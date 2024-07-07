@@ -9,6 +9,7 @@ from .ansi import (
     BgColor,
     Ansi16Code,
     wrap_ansi_16,
+    inverse
 )
 from .utils import get_code_from_rgb, hex_to_rgb
 
@@ -102,6 +103,11 @@ class ChalkBuilder:
     @property
     def strikethrough(self) -> "ChalkBuilder":
         self.style(Mod.strikethrough)
+        return self
+
+    @property
+    def inverse(self) -> "ChalkBuilder":
+        self._codes = list(map(inverse, self._codes))
         return self
 
     # Foreground colors

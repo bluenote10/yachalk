@@ -7,6 +7,8 @@ import math
 
 from typing import NamedTuple
 
+from .types import Code
+
 
 class Ansi16Code(NamedTuple):
     on: int
@@ -75,6 +77,40 @@ class BgColor:
 
 
 _ANSI_BACKGROUND_OFFSET = 10
+
+
+def is_code_color(graphic_rendition_mode: int):
+    return graphic_rendition_mode in range(30, 40) or graphic_rendition_mode in range(90, 100)
+
+
+def is_code_bgcolor(graphic_rendition_mode: int):
+    return graphic_rendition_mode in range(40, 50) or graphic_rendition_mode in range(100, 110)
+
+
+def inverse(code: Code):
+    try:
+        graphic_rendition_mode = code.on.removeprefix("\x1b[").removesuffix("m").split(";")
+        graphic_rendition_off = code.off.removeprefix("\x1b[").removesuffix("m").split(";")
+        if is_code_bgcolor(int(graphic_rendition_mode[0])):
+            code_on = int(graphic_rendition_mode[0]) - _ANSI_BACKGROUND_OFFSET
+            code_off = int(graphic_rendition_off[0]) - _ANSI_BACKGROUND_OFFSET
+        elif is_code_color(int(graphic_rendition_mode[0])):
+            code_on = int(graphic_rendition_mode[0]) + _ANSI_BACKGROUND_OFFSET
+            code_off = int(graphic_rendition_off[0]) + _ANSI_BACKGROUND_OFFSET
+        else:
+            return code
+        # TODO: Make the following lines more readable
+        return Code(
+            on=f"\x1b[{code_on}"
+            + (
+                f";{';'.join(graphic_rendition_mode[1:])}m"
+                if len(graphic_rendition_mode) > 1
+                else "m"
+            ),
+            off=f"\x1b[{code_off}m",
+        )
+    except TypeError:
+        return code
 
 
 def wrap_ansi_16(code: int, background: bool = False) -> str:
