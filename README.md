@@ -190,7 +190,7 @@ Return current color mode.
 - `dim` - Emitting only a small amount of light.
 - `italic` - Make text italic. *(Not widely supported)*
 - `underline` - Make text underline. *(Not widely supported)*
-- `inverse`- Inverse background and foreground colors.
+- `inverse`- Invert background and foreground colors.
 - `hidden` - Prints the text, but makes it invisible.
 - `strikethrough` - Puts a horizontal line through the center of the text. *(Not widely supported)*
 - `visible`- Prints the text only when Chalk has a color level > 0. Can be useful for things that are purely cosmetic.

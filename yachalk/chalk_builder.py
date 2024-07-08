@@ -95,6 +95,11 @@ class ChalkBuilder:
         return self
 
     @property
+    def inverse(self) -> "ChalkBuilder":
+        self.style(Mod.inverse)
+        return self
+
+    @property
     def hidden(self) -> "ChalkBuilder":
         self.style(Mod.hidden)
         return self
