@@ -83,6 +83,10 @@ class ChalkFactory:
         return self._create_generator_from_ansi_16_code(Mod.overline)
 
     @property
+    def inverse(self) -> ChalkBuilder:
+        return self._create_generator_from_ansi_16_code(Mod.inverse)
+
+    @property
     def hidden(self) -> ChalkBuilder:
         return self._create_generator_from_ansi_16_code(Mod.hidden)
 
