@@ -20,6 +20,7 @@ class Mod:
     italic = Ansi16Code(3, 23)
     underline = Ansi16Code(4, 24)
     overline = Ansi16Code(53, 55)
+    inverse = Ansi16Code(7, 27)
     hidden = Ansi16Code(8, 28)
     strikethrough = Ansi16Code(9, 29)
 
