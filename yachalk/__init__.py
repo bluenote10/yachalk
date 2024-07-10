@@ -1,8 +1,8 @@
-from .chalk_instance import chalk, create_chalk
 from .chalk_factory import ChalkFactory
+from .chalk_instance import chalk, create_chalk
 from .types import ColorMode
 
-VERSION = "0.1.5"
+VERSION = "0.1.6"
 
 __all__ = [
     "chalk",
