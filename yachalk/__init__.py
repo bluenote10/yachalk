@@ -5,7 +5,7 @@ from .chalk_factory import ChalkFactory
 from .types import ColorMode
 from ._win import enable_virtual_terminal_processing
 
-VERSION = "0.1.5"
+VERSION = "0.1.6"
 
 if platform.system() == "Windows" and "DISABLE_VT_PROCESSING" not in os.environ:
     enable_virtual_terminal_processing()
