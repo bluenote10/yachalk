@@ -2,7 +2,7 @@ from .chalk_factory import ChalkFactory
 from .chalk_instance import chalk, create_chalk
 from .types import ColorMode
 
-VERSION = "0.1.6"
+VERSION = "0.1.7"
 
 __all__ = [
     "chalk",

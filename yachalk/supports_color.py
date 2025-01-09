@@ -10,8 +10,6 @@ import os
 import platform
 import re
 import sys
-
-
 from typing import Optional, TextIO
 
 from .types import ColorMode
@@ -47,9 +45,6 @@ def detect_color_support(stream: TextIO = sys.stdout) -> ColorMode:
     # is specified is not very intuitive (at least to me).
     if force_color is not None:
         return force_color
-
-    elif not is_tty:
-        return ColorMode.AllOff
 
     elif os.environ.get("TERM") == "dumb":
         return ColorMode.AllOff
@@ -98,6 +93,9 @@ def detect_color_support(stream: TextIO = sys.stdout) -> ColorMode:
             return ColorMode.Basic16
         else:
             return ColorMode.AllOff
+
+    elif not is_tty:
+        return ColorMode.AllOff
 
     elif os.environ.get("COLORTERM") == "truecolor":
         return ColorMode.FullTrueColor
