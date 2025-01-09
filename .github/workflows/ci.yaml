@@ -15,10 +15,10 @@ jobs:
 
   tests:
 
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
-        python-version: ["3.6", "3.7", "3.8", "3.9", "3.10", "3.11"]
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
 
     steps:
 
@@ -33,7 +33,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install "black<23" flake8 mypy pytest pytest-cov
+          pip install black flake8 mypy pytest pytest-cov
           pip freeze
 
       - name: Install package
@@ -57,7 +57,7 @@ jobs:
           ./scripts/test
 
       - name: Upload to codecov.io
-        if: matrix.python-version == '3.8'
+        if: matrix.python-version == '3.10'
         # https://github.com/codecov/codecov-action
         uses: codecov/codecov-action@v1
         with:
@@ -68,7 +68,7 @@ jobs:
 
     needs: tests
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
 
@@ -78,7 +78,7 @@ jobs:
       - name: Set up python
         uses: actions/setup-python@v2
         with:
-          python-version: 3.8
+          python-version: "3.10"
 
       - name: Install wheel
         run: pip install wheel
@@ -110,5 +110,5 @@ jobs:
         with:
           user: __token__
           password: ${{ secrets.PYPI_API_TOKEN }}
-          skip_existing: true
+          skip-existing: true
 
