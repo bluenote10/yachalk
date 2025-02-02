@@ -303,17 +303,17 @@ def test_support_nesting_styles_of_same_type(chalk: ChalkFactory) -> None:
 
 def test_line_breaks_should_close_and_open_colors(chalk: ChalkFactory) -> None:
     assert r(chalk.grey("hello\nworld")) == r(
-        "\u001B[90mhello\u001B[39m\n\u001B[90mworld\u001B[39m"
+        "\u001b[90mhello\u001b[39m\n\u001b[90mworld\u001b[39m"
     )
 
 
 def test_line_breaks_should_close_and_open_colors_with_crlf(chalk: ChalkFactory) -> None:
     assert r(chalk.grey("hello\r\nworld")) == r(
-        "\u001B[90mhello\u001B[39m\r\n\u001B[90mworld\u001B[39m"
+        "\u001b[90mhello\u001b[39m\r\n\u001b[90mworld\u001b[39m"
     )
 
 
 def test_line_breaks_should_close_and_open_colors_multiple_occurrences(chalk: ChalkFactory) -> None:
     assert r(chalk.grey(" a \r\n b \n c \r\n d ")) == r(
-        "\u001B[90m a \u001B[39m\r\n\u001B[90m b \u001B[39m\n\u001B[90m c \u001B[39m\r\n\u001B[90m d \u001B[39m"  # noqa
+        "\u001b[90m a \u001b[39m\r\n\u001b[90m b \u001b[39m\n\u001b[90m c \u001b[39m\r\n\u001b[90m d \u001b[39m"  # noqa
     )
