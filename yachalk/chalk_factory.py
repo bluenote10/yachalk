@@ -94,6 +94,10 @@ class ChalkFactory:
     def strikethrough(self) -> ChalkBuilder:
         return self._create_generator_from_ansi_16_code(Mod.strikethrough)
 
+    @property
+    def visible(self) -> "ChalkBuilder":
+        return ChalkBuilder(mode=self._mode, codes=[]).visible
+
     # Foreground colors
 
     @property

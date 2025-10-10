@@ -17,8 +17,12 @@ class ChalkBuilder:
     def __init__(self, mode: ColorMode, codes: List[Code]):
         self._mode = mode
         self._codes = codes
+        self._only_visible_if_supported = False
 
     def __call__(self, *args: object, sep: str = " ") -> str:
+        if self._only_visible_if_supported and self._mode == ColorMode.AllOff:
+            return ""
+
         if len(args) == 1 and isinstance(args[0], str):
             s = args[0]
         else:
@@ -107,6 +111,11 @@ class ChalkBuilder:
     @property
     def strikethrough(self) -> "ChalkBuilder":
         self.style(Mod.strikethrough)
+        return self
+
+    @property
+    def visible(self) -> "ChalkBuilder":
+        self._only_visible_if_supported = True
         return self
 
     # Foreground colors

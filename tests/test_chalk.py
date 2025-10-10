@@ -31,7 +31,7 @@ def test_interface_consistency(chalk: ChalkFactory) -> None:
         "enable_full_colors",
         "_create_generator_from_ansi_16_code",
     }
-    funcs_generator -= {"_codes"}
+    funcs_generator -= {"_codes", "_only_visible_if_supported"}
 
     print(funcs_factory)
     print(funcs_generator)
@@ -288,6 +288,15 @@ def test_nested_reset(chalk: ChalkFactory) -> None:
     assert r(s) == r(
         "\x1b[31mouter \x1b[1m\x1b[34mbefore \x1b[22m\x1b[39m\x1b[31m\x1b[39m\x1b[0mreset\x1b[0m\x1b[31m\x1b[1m\x1b[34m after\x1b[22m\x1b[39m\x1b[31m outer \x1b[39m\x1b[0mreset\x1b[0m\x1b[31m outer\x1b[39m"  # noqa
     )
+
+
+def test_visible(chalk: ChalkFactory) -> None:
+    s = chalk.red.visible("foo")
+    assert r(s) == r("\x1b[31mfoo\x1b[39m")
+
+    chalk.disable_all_ansi()
+    s = chalk.red.visible("foo")
+    assert r(s) == r("")
 
 
 # -----------------------------------------------------------------------------
