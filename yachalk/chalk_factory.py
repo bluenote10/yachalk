@@ -96,10 +96,7 @@ class ChalkFactory:
 
     @property
     def visible(self) -> "ChalkBuilder":
-        return ChalkBuilder(
-            mode=self._mode,
-            codes=[]
-        ).visible
+        return ChalkBuilder(mode=self._mode, codes=[]).visible
 
     # Foreground colors
 

@@ -31,7 +31,7 @@ def test_interface_consistency(chalk: ChalkFactory) -> None:
         "enable_full_colors",
         "_create_generator_from_ansi_16_code",
     }
-    funcs_generator -= {"_codes", "_visible_when_colors"}
+    funcs_generator -= {"_codes", "_only_visible_if_supported"}
 
     print(funcs_factory)
     print(funcs_generator)
